@@ -4,6 +4,25 @@ All notable changes to `container` will be documented in this file.
 
 Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+## 1.1.0 - 2020-04-19
+
+### Added
+- `getInstance` get container instance  
+- `setInstance` set container itself inside the container  
+
+### Deprecated
+- Nothing
+
+### Fixed
+- Nothing
+
+### Removed
+- Nothing
+
+### Security
+- Nothing
+
+
 ## 1.0 - 2020-04-18
 
 ### Added

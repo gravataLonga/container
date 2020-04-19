@@ -14,6 +14,11 @@ use ReflectionParameter;
 class Container implements ContainerInterface
 {
     /**
+     * @var static
+     */
+    protected static $instance;
+
+    /**
      * @var array
      */
     private $bindings;
@@ -37,6 +42,22 @@ class Container implements ContainerInterface
     {
         $this->bindings = $config;
         $this->share = [];
+    }
+
+    /**
+     * @return Container|static
+     */
+    public static function getInstance()
+    {
+        return self::$instance;
+    }
+
+    /**
+     * @param ContainerInterface $container
+     */
+    public static function setInstance(ContainerInterface $container)
+    {
+        self::$instance = $container;
     }
 
     /**

@@ -138,4 +138,16 @@ class ContainerTest extends TestCase
         });
         $this->assertEquals($container->get('random'), $container->get('random'));
     }
+
+    /**
+     * @test
+     */
+    public function can_get_instance_of_container()
+    {
+        $container = new Container();
+        $container::setInstance($container);
+
+        $this->assertInstanceOf(ContainerInterface::class, Container::getInstance());
+        $this->assertSame($container, Container::getInstance());
+    }
 }
