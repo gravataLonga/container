@@ -150,4 +150,20 @@ class ContainerTest extends TestCase
         $this->assertInstanceOf(ContainerInterface::class, Container::getInstance());
         $this->assertSame($container, Container::getInstance());
     }
+
+    /**
+     * @test
+     */
+    public function can_set_direct_value_rather_than_callback()
+    {
+        $container = new Container();
+
+        $container->set('hello', 'world');
+        $container->set('abc', 123);
+        $container->set('object', new \stdClass());
+
+        $this->assertSame('world', $container->get('hello'));
+        $this->assertSame(123, $container->get('abc'));
+        $this->assertInstanceOf(\stdClass::class, $container->get('object'));
+    }
 }

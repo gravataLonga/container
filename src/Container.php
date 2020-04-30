@@ -11,7 +11,7 @@ use ReflectionParameter;
  *
  * @package Gravatalonga\Container
  */
-class Container implements ContainerInterface
+class Container implements ContainerInterface, \ArrayAccess
 {
     /**
      * @var static
@@ -72,7 +72,7 @@ class Container implements ContainerInterface
 
             try {
                 $reflection = new \ReflectionClass($id);
-                return $reflection->newInstanceArgs($this->buildDependecies($reflection));
+                return $reflection->newInstanceArgs($this->buildDependencies($reflection));
             } catch (\ReflectionException $e) {
                 throw NotFoundContainerException::entryNotFound($id);
             }
@@ -119,12 +119,16 @@ class Container implements ContainerInterface
      * Alias for Factory method
      *
      * @param string $id
-     * @param Closure $factory
+     * @param mixed $factory
      * @return void
      */
-    public function set($id, Closure $factory)
+    public function set($id, $factory)
     {
-        $this->factory($id, $factory);
+        if ($factory instanceof Closure) {
+            $this->factory($id, $factory);
+            return;
+        }
+        $this->bindings[$id] = $factory;
     }
 
     /**
@@ -134,7 +138,7 @@ class Container implements ContainerInterface
      * @param callable $factory
      * @return void
      */
-    public function share($id, callable $factory)
+    public function share($id, Closure $factory)
     {
         $this->share[$id] = $factory;
     }
@@ -143,7 +147,7 @@ class Container implements ContainerInterface
      * @param \ReflectionClass $reflection
      * @return array<int, mixed>
      */
-    protected function buildDependecies(\ReflectionClass $reflection)
+    protected function buildDependencies(\ReflectionClass $reflection)
     {
         if (!$constructor = $reflection->getConstructor()) {
             return [];
@@ -157,5 +161,38 @@ class Container implements ContainerInterface
             }
             return $this->get($type->getName());
         }, $params);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function offsetExists($offset)
+    {
+        return $this->has($offset);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function offsetGet($offset)
+    {
+        return $this->get($offset);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function offsetSet($offset, $value)
+    {
+        $this->factory($offset, $value);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function offsetUnset($offset)
+    {
+        unset($this->bindings[$offset]);
+        unset($this->share[$offset]);
     }
 }

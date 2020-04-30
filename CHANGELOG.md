@@ -4,6 +4,28 @@ All notable changes to `container` will be documented in this file.
 
 Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+## 1.2.0 - 2020-05-01
+
+### Added
+- `set` can accept mixed value as second argument rather than Closure   
+- `offsetGet` a way to get entry from container. Ease way to get entry like `$container['entry']`  
+- `offsetSet` get entry from container. Easy way to include entry to container like `$container['entry'] = "ola";`  
+- `offsetExists` it's same as `has`.  
+- `offsetUnset` remove entry from `$container`    
+
+### Deprecated
+- Nothing
+
+### Fixed
+- Nothing
+
+### Removed
+- Nothing
+
+### Security
+- Nothing
+
+
 ## 1.1.0 - 2020-04-19
 
 ### Added
