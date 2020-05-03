@@ -11,7 +11,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Gravatalonga\\": "src/"
+            "Gravatalonga\\Container\\": "src/"
         }
     },
     "autoload-dev": {

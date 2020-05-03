@@ -4,6 +4,24 @@ All notable changes to `container` will be documented in this file.
 
 Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+## 1.2.1 - 2020-06-03
+
+### Added
+- Nothing
+
+### Deprecated
+- Nothing
+
+### Fixed
+- Namespaces is now inside the correct namespaces. Change from `Gravatalonga\Container` to `Gravatalonga\Container\Container`.  
+
+### Removed
+- Nothing
+
+### Security
+- Nothing
+
+
 ## 1.2.0 - 2020-05-01
 
 ### Added

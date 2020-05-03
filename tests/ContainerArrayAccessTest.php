@@ -2,7 +2,7 @@
 
 namespace Tests;
 
-use Gravatalonga\Container;
+use Gravatalonga\Container\Container;
 use PHPUnit\Framework\TestCase;
 
 class ContainerArrayAccessTest extends TestCase

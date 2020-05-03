@@ -2,7 +2,7 @@
 
 namespace Tests;
 
-use Gravatalonga\Container;
+use Gravatalonga\Container\Container;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
 use Psr\Container\NotFoundExceptionInterface;

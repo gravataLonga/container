@@ -17,7 +17,7 @@ $ composer require gravatalonga/container
 ## Usage
 
 ```php
-use Gravatalonga\Container;
+use Gravatalonga\Container\Container;
 
 $container = new Container();
 $container->set('random', function() {
@@ -38,7 +38,7 @@ if ($container->has('random1'))  {
 Can be use like an array access also,  
 
 ```php
-use Gravatalonga\Container;  
+use Gravatalonga\Container\Container;
 
 $container = new Container();  
 $container[FooBar::class] = function(ContainerInterface $container) {

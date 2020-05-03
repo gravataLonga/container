@@ -1,6 +1,6 @@
 <?php
 
-namespace Gravatalonga;
+namespace Gravatalonga\Container;
 
 use Psr\Container\ContainerExceptionInterface;
 
