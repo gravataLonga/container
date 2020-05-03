@@ -50,6 +50,41 @@ if (isset($container[FooBar::class])) {
 }
 ```  
 
+In advance usage, you can resolve class which not set into container. Our container it will attemp resolve class from builtin/type hint arguments of constructions.  
+
+```php
+use Gravatalonga\Container\Container;
+class Test
+{
+    public function __construct(string $name)
+    {
+        $this->name = $name;
+    }
+}
+
+$container = new Container(); 
+$container->set('name', 'my-var');
+
+$container->get(Test::class); // my-var it will inject into Test class.  
+```  
+
+If argument accept nullable it will attemp resolve if not, it will inject null as argument.  
+
+```php
+use Gravatalonga\Container\Container;
+class Test
+{
+    public function __construct(string $name = null)
+    {
+        $this->name = $name;
+    }
+}
+
+$container = new Container(); 
+
+$container->get(Test::class); // null it will inject into Test class.  
+```  
+
 ## Change log
 
 Please see [CHANGELOG](CHANGELOG.md) for more information on what has changed recently.

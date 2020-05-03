@@ -157,9 +157,22 @@ class Container implements ContainerInterface, \ArrayAccess
 
         return array_map(function (ReflectionParameter $param) {
             if (!$type = $param->getType()) {
+                if ($this->has($param->getName())) {
+                    return $this->get($param->getName());
+                }
                 throw ContainerException::findType($param->getClass());
             }
-            return $this->get($type->getName());
+
+            if ($type->isBuiltin()) {
+                if ($this->has($param->getName())) {
+                    return $this->get($param->getName());
+                }
+                if ($type->allowsNull()) {
+                    return null;
+                }
+            }
+
+             return $this->get($type->getName());
         }, $params);
     }
 

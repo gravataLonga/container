@@ -6,6 +6,10 @@ use Gravatalonga\Container\Container;
 use PHPUnit\Framework\TestCase;
 use Tests\Stub\Bar;
 use Tests\Stub\Dog;
+use Tests\Stub\EmptyConstructionTest;
+use Tests\Stub\FooBarClass;
+use Tests\Stub\FooBarWithNullClass;
+use Tests\Stub\FooBarWithoutBuiltInTypeClass;
 use Tests\Stub\FooInterface;
 
 class ResolveConstructionTest extends TestCase
@@ -34,5 +38,72 @@ class ResolveConstructionTest extends TestCase
         });
 
         $this->assertInstanceOf(Dog::class, $container->get(Dog::class));
+    }
+
+    /**
+     * @test
+     */
+    public function can_resolve_by_var_name_from_container()
+    {
+        $container = new Container();
+        $container->set('name', 'my-var');
+
+        $class = $container->get(FooBarClass::class);
+
+        $this->assertInstanceOf(FooBarClass::class, $class);
+        $this->assertEquals('my-var', $class->name);
+    }
+
+    /**
+     * @test
+     */
+    public function can_resolve_to_null_if_cant_resolve_from_container()
+    {
+        $container = new Container();
+
+        $class = $container->get(FooBarWithNullClass::class);
+
+        $this->assertInstanceOf(FooBarWithNullClass::class, $class);
+        $this->assertEquals(null, $class->name);
+    }
+
+    /**
+     * @test
+     */
+    public function if_param_is_nullable_but_we_have_value_from_container()
+    {
+        $container = new Container();
+        $container->set('name', 'my-var');
+
+        $class = $container->get(FooBarWithNullClass::class);
+
+        $this->assertInstanceOf(FooBarWithNullClass::class, $class);
+        $this->assertEquals('my-var', $class->name);
+    }
+
+    /**
+     * @test
+     */
+    public function can_resolve_from_container_without_builtin_type()
+    {
+        $container = new Container();
+        $container->set('name', 'my-var');
+
+        $class = $container->get(FooBarWithoutBuiltInTypeClass::class);
+
+        $this->assertInstanceOf(FooBarWithoutBuiltInTypeClass::class, $class);
+        $this->assertEquals('my-var', $class->name);
+    }
+
+    /**
+     * @test
+     */
+    public function can_resolve_class_from_container_if_dont_have_argument_from_constructor()
+    {
+        $container = new Container();
+
+        $class = $container->get(EmptyConstructionTest::class);
+
+        $this->assertInstanceOf(EmptyConstructionTest::class, $class);
     }
 }
