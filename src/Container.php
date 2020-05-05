@@ -62,6 +62,7 @@ class Container implements ContainerInterface, \ArrayAccess
 
     /**
      * @inheritDoc
+     * @throws \ReflectionException
      */
     public function get($id)
     {
@@ -85,7 +86,8 @@ class Container implements ContainerInterface, \ArrayAccess
         $get = $this->bindings[$id] ?? $this->share[$id];
 
         if ($get instanceof Closure) {
-            $value = $get($this);
+            $reflection = new \ReflectionFunction($get);
+            $value = $reflection->invokeArgs($this->buildDependencies($reflection));
             if (isset($this->share[$id])) {
                 $this->resolved[$id] = $value;
             }
@@ -147,13 +149,18 @@ class Container implements ContainerInterface, \ArrayAccess
      * @param \ReflectionClass $reflection
      * @return array<int, mixed>
      */
-    protected function buildDependencies(\ReflectionClass $reflection)
+    protected function buildDependencies(\Reflector $reflection)
     {
-        if (!$constructor = $reflection->getConstructor()) {
-            return [];
+        if ($reflection instanceof \ReflectionClass) {
+            if (!$constructor = $reflection->getConstructor()) {
+                return [];
+            }
+            $params = $constructor->getParameters();
+        } else if ($reflection instanceof \ReflectionFunction) {
+            if (!$params = $reflection->getParameters()) {
+                return [];
+            }
         }
-
-        $params = $constructor->getParameters();
 
         return array_map(function (ReflectionParameter $param) {
             if (!$type = $param->getType()) {
@@ -170,6 +177,10 @@ class Container implements ContainerInterface, \ArrayAccess
                 if ($type->allowsNull()) {
                     return null;
                 }
+            }
+
+            if ($type->getName() === ContainerInterface::class) {
+                return $this;
             }
 
              return $this->get($type->getName());

@@ -4,6 +4,25 @@ All notable changes to `container` will be documented in this file.
 
 Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+## 1.3.1 - 2020-06-05
+
+### Added
+- Nothing
+
+### Deprecated
+- Nothing
+
+### Fixed
+- When passing a factory function, the argument aren't resolve by container, only resolving 
+typehint of class. Now we can support resolve dependencies on factory.
+- If you typehint ```ContainerInterface``` it will resolve itself into factory.  
+
+### Removed
+- Nothing
+
+### Security
+- Nothing
+
 ## 1.3.0 - 2020-06-03
 
 ### Added

@@ -4,6 +4,7 @@ namespace Tests;
 
 use Gravatalonga\Container\Container;
 use PHPUnit\Framework\TestCase;
+use Psr\Container\ContainerInterface;
 
 class ContainerArrayAccessTest extends TestCase
 {
@@ -13,7 +14,7 @@ class ContainerArrayAccessTest extends TestCase
     public function can_use_offset_set()
     {
         $container = new Container();
-        $container['fact'] = function ($container) {
+        $container['fact'] = function (ContainerInterface $container) {
             return rand(0, 100);
         };
 
@@ -29,7 +30,7 @@ class ContainerArrayAccessTest extends TestCase
     public function can_use_offset_get()
     {
         $container = new Container();
-        $container['fact'] = function ($container) {
+        $container['fact'] = function (ContainerInterface $container) {
             return rand(1, 100);
         };
 
@@ -42,7 +43,7 @@ class ContainerArrayAccessTest extends TestCase
     public function can_use_offset_exists()
     {
         $container = new Container();
-        $container['fact'] = function ($container) {
+        $container['fact'] = function (ContainerInterface $container) {
             return rand(0, 100);
         };
 
@@ -59,7 +60,7 @@ class ContainerArrayAccessTest extends TestCase
         $container->share('hello', function () {
             return 'world';
         });
-        $container->set('my', function ($container) {
+        $container->set('my', function (ContainerInterface $container) {
             return 'you';
         });
         $container->set('my-constant', '123');

@@ -4,6 +4,7 @@ namespace Tests;
 
 use Gravatalonga\Container\Container;
 use PHPUnit\Framework\TestCase;
+use Psr\Container\ContainerInterface;
 use Tests\Stub\Bar;
 use Tests\Stub\Dog;
 use Tests\Stub\EmptyConstructionTest;
@@ -105,5 +106,22 @@ class ResolveConstructionTest extends TestCase
         $class = $container->get(EmptyConstructionTest::class);
 
         $this->assertInstanceOf(EmptyConstructionTest::class, $class);
+    }
+
+    /**
+     * @test
+     */
+    public function can_resolve_buitin_type_of_factory()
+    {
+        $container = new Container();
+        $container->set('myVar', '123');
+        $container->factory('complexVar', function (ContainerInterface $container, $myVar = null) {
+            return 'abc'.$myVar;
+        });
+
+        $this->assertTrue($container->has('myVar'));
+        $this->assertTrue($container->has('complexVar'));
+        $this->assertSame('123', $container->get('myVar'));
+        $this->assertSame('abc123', $container->get('complexVar'));
     }
 }
