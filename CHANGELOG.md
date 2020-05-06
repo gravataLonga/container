@@ -4,6 +4,25 @@ All notable changes to `container` will be documented in this file.
 
 Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+## 1.4.0 - 2020-06-06
+
+### Added
+- ```make(string $id, array $arguments = [])``` it will resolve a dependency from container with argument supplier
+if argument not supplier it will resolve with information of container.  
+- ```ContainerException``` it will raise an exception if called for entry registed as ```share```.  
+
+### Deprecated
+- Nothing
+
+### Fixed
+- Nothing
+
+### Removed
+- Nothing
+
+### Security
+- Nothing
+
 ## 1.3.1 - 2020-06-05
 
 ### Added

@@ -62,43 +62,6 @@ class Container implements ContainerInterface, \ArrayAccess
 
     /**
      * @inheritDoc
-     * @throws \ReflectionException
-     */
-    public function get($id)
-    {
-        if (!$this->has($id)) {
-            if (!class_exists($id)) {
-                throw NotFoundContainerException::entryNotFound($id);
-            }
-
-            try {
-                $reflection = new \ReflectionClass($id);
-                return $reflection->newInstanceArgs($this->buildDependencies($reflection));
-            } catch (\ReflectionException $e) {
-                throw NotFoundContainerException::entryNotFound($id);
-            }
-        }
-
-        if (isset($this->resolved[$id])) {
-            return $this->resolved[$id];
-        }
-
-        $get = $this->bindings[$id] ?? $this->share[$id];
-
-        if ($get instanceof Closure) {
-            $reflection = new \ReflectionFunction($get);
-            $value = $reflection->invokeArgs($this->buildDependencies($reflection));
-            if (isset($this->share[$id])) {
-                $this->resolved[$id] = $value;
-            }
-            return $value;
-        }
-
-        return $get;
-    }
-
-    /**
-     * @inheritDoc
      */
     public function has($id)
     {
@@ -146,23 +109,123 @@ class Container implements ContainerInterface, \ArrayAccess
     }
 
     /**
-     * @param \ReflectionClass $reflection
-     * @return array<int, mixed>
+     * @inheritDoc
+     * @throws \ReflectionException
      */
-    protected function buildDependencies(\Reflector $reflection)
+    public function get($id)
     {
+        return $this->resolve($id, []);
+    }
+
+    /**
+     * @param $id
+     * @param array $arguments
+     * @return mixed|object
+     * @throws NotFoundContainerException
+     * @throws \ReflectionException
+     * @throws ContainerException
+     */
+    public function make($id, array $arguments = [])
+    {
+        if (isset($this->share[$id])) {
+            throw ContainerException::shareOnMake($id);
+        }
+
+        return $this->resolve($id, $arguments);
+    }
+
+    /**
+     * @param string $id
+     * @param array $arguments
+     * @return mixed|object
+     * @throws NotFoundContainerException
+     * @throws \ReflectionException
+     */
+    protected function resolve(string $id, array $arguments = [])
+    {
+        if (isset($this->resolved[$id])) {
+            return $this->resolved[$id];
+        }
+
+        if (!$this->has($id) && !class_exists($id)) {
+            throw NotFoundContainerException::entryNotFound($id);
+        } else if (!$this->has($id) && class_exists($id)) {
+            return $this->resolveClass($id, $arguments);
+        } else if ($this->has($id)) {
+            return $this->resolveEntry($id, $arguments);
+        }
+        throw NotFoundContainerException::entryNotFound($id);
+    }
+
+    /**
+     * @param string $id
+     * @param array $arguments
+     * @return object
+     * @throws \ReflectionException
+     */
+    protected function resolveClass(string $id, array $arguments = [])
+    {
+        $reflection = new \ReflectionClass($id);
+        return $reflection->newInstanceArgs($this->resolveArguments($reflection, $arguments));
+    }
+
+    /**
+     * @param string $id
+     * @param array $arguments
+     * @return mixed
+     * @throws \ReflectionException
+     */
+    protected function resolveEntry(string $id, array $arguments = [])
+    {
+        $get = $this->bindings[$id] ?? $this->share[$id];
+
+        if ($get instanceof Closure) {
+            $reflection = new \ReflectionFunction($get);
+            $value = $reflection->invokeArgs($this->resolveArguments($reflection, $arguments));
+            if (isset($this->share[$id])) {
+                $this->resolved[$id] = $value;
+            }
+            return $value;
+        }
+
+        return $get;
+    }
+
+    /**
+     * @param \Reflector $reflection
+     * @param array $arguments
+     * @return array
+     */
+    protected function resolveArguments(\Reflector $reflection, array $arguments = [])
+    {
+        $params = [];
         if ($reflection instanceof \ReflectionClass) {
             if (!$constructor = $reflection->getConstructor()) {
-                return [];
+                $params = [];
+            } else {
+                $params = $constructor->getParameters();
             }
-            $params = $constructor->getParameters();
         } else if ($reflection instanceof \ReflectionFunction) {
             if (!$params = $reflection->getParameters()) {
-                return [];
+                $params = [];
             }
         }
 
-        return array_map(function (ReflectionParameter $param) {
+        return $this->buildDependencies($params, $arguments);
+    }
+
+    /**
+     * @param ReflectionParameter[] $params
+     * @param array $arguments
+     * @return array<string, string>
+     */
+    protected function buildDependencies(array $params, array $arguments = [])
+    {
+        return array_map(function (ReflectionParameter $param) use ($arguments) {
+            if (isset($arguments[$param->getName()])) {
+                return $arguments[$param->getName()];
+            }
+
             if (!$type = $param->getType()) {
                 if ($this->has($param->getName())) {
                     return $this->get($param->getName());
@@ -197,6 +260,7 @@ class Container implements ContainerInterface, \ArrayAccess
 
     /**
      * @inheritDoc
+     * @throws \ReflectionException
      */
     public function offsetGet($offset)
     {
