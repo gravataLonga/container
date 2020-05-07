@@ -44,11 +44,11 @@ class ContainerArrayAccessTest extends TestCase
     {
         $container = new Container();
         $container['fact'] = function (ContainerInterface $container) {
-            return rand(0, 100);
+            return rand(1, 100);
         };
 
-        $this->assertTrue(isset($container['fact']));
-        $this->assertFalse(empty($container['fact']));
+        $this->assertTrue(isset($container['fact']), "cannot find entry using 'isset'");
+        $this->assertFalse(empty($container['fact']), "cannot find entry using 'empty'");
     }
 
     /**
