@@ -12,8 +12,8 @@ jobs:
     strategy:
       matrix:
         operating-system: [ ubuntu-18.04, windows-2019 ]
-        php: [ '7.1', '7.2', '7.3', '7.4', '7.3.3' ]
-    name: PHPUnit on ${{ matrix.php }}
+        php: [ '7.2', '7.3', '7.4', '7.3.3' ]
+    name: PHPUnit on ${{ matrix.php }} - ${{ matrix.operating-system }}
     steps:
       - uses: actions/checkout@master
       - name: Setup PHP
