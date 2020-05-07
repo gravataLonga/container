@@ -23,7 +23,7 @@ jobs:
       - name: Validate composer.json and composer.lock
         run: composer validate
       - name: Install dependencies
-        run: composer install --prefer-dist --no-progress --no-interaction --prefer-lowest
+        run: composer install --prefer-dist --no-progress --no-interaction
       - name: Run PHPUnit
         run: composer run-script test
 
