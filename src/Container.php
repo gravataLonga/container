@@ -14,7 +14,7 @@ use ReflectionParameter;
 class Container implements ContainerInterface, \ArrayAccess
 {
     /**
-     * @var static
+     * @var ContainerInterface
      */
     protected static $instance;
 
@@ -45,7 +45,7 @@ class Container implements ContainerInterface, \ArrayAccess
     }
 
     /**
-     * @return Container|static
+     * @return ContainerInterface
      */
     public static function getInstance()
     {
@@ -100,7 +100,7 @@ class Container implements ContainerInterface, \ArrayAccess
      * Share rather resolve as factory
      *
      * @param string $id
-     * @param callable $factory
+     * @param Closure $factory
      * @return void
      */
     public function share($id, Closure $factory)
@@ -158,12 +158,12 @@ class Container implements ContainerInterface, \ArrayAccess
     }
 
     /**
-     * @param string $id
+     * @param class-string|object $id
      * @param array $arguments
      * @return object
      * @throws \ReflectionException
      */
-    protected function resolveClass(string $id, array $arguments = [])
+    protected function resolveClass($id, array $arguments = [])
     {
         $reflection = new \ReflectionClass($id);
         return $reflection->newInstanceArgs($this->resolveArguments($reflection, $arguments));
