@@ -3,6 +3,7 @@
 [![Latest Version on Packagist][ico-version]][link-packagist]
 [![Software License][ico-license]](LICENSE.md)
 [![Total Downloads][ico-downloads]][link-downloads]
+[![PHP Unit][ico-action]][link-action]
 
 Container implementation which follow PSR-11.
 
@@ -118,8 +119,11 @@ The MIT License (MIT). Please see [License File](LICENSE.md) for more informatio
 [ico-version]: https://img.shields.io/packagist/v/gravatalonga/container.svg?style=flat-square
 [ico-license]: https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square
 [ico-downloads]: https://img.shields.io/packagist/dt/gravatalonga/container.svg?style=flat-square
+[ico-action]: https://github.com/gravataLonga/container/workflows/PHP%20Composer/badge.svg?branch=master&event=status  
 
 [link-packagist]: https://packagist.org/packages/gravatalonga/container
 [link-downloads]: https://packagist.org/packages/gravatalonga/container
 [link-author]: https://github.com/gravatalonga
 [link-contributors]: ../../contributors
+[link-action]: https://github.com/gravataLonga/container/actions?query=workflow%3A%22PHP+Composer%22
+
