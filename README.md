@@ -8,7 +8,7 @@ Container implementation which follow PSR-11.
 
 ## Requirment  
 
-Require at least PHP 7.1 and composer.    
+Require at least PHP 7.2 and composer.    
 
 ## Install
 
