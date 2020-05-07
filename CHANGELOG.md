@@ -4,7 +4,7 @@ All notable changes to `container` will be documented in this file.
 
 Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
-## 1.4.0 - 2020-06-06
+## 1.4.0 - 2020-05-06
 
 ### Added
 - ```make(string $id, array $arguments = [])``` it will resolve a dependency from container with argument supplier
@@ -23,7 +23,7 @@ if argument not supplier it will resolve with information of container.
 ### Security
 - Nothing
 
-## 1.3.1 - 2020-06-05
+## 1.3.1 - 2020-05-05
 
 ### Added
 - Nothing
@@ -42,7 +42,7 @@ typehint of class. Now we can support resolve dependencies on factory.
 ### Security
 - Nothing
 
-## 1.3.0 - 2020-06-03
+## 1.3.0 - 2020-05-03
 
 ### Added
 - Can resolve built in type of class.  
@@ -60,7 +60,7 @@ typehint of class. Now we can support resolve dependencies on factory.
 ### Security
 - Nothing
 
-## 1.2.1 - 2020-06-03
+## 1.2.1 - 2020-05-03
 
 ### Added
 - Nothing
