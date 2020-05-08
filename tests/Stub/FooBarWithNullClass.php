@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\Stub;
 
 class FooBarWithNullClass
@@ -9,7 +11,7 @@ class FooBarWithNullClass
      */
     public $name;
 
-    public function __construct(string $name = null)
+    public function __construct(?string $name = null)
     {
         $this->name = $name;
     }

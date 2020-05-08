@@ -1,18 +1,21 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Gravatalonga\Container;
 
 use Exception;
 use Psr\Container\NotFoundExceptionInterface;
 
-class NotFoundContainerException extends Exception implements NotFoundExceptionInterface
+final class NotFoundContainerException extends Exception implements NotFoundExceptionInterface
 {
     /**
      * @param string $entry
-     * @return static
+     *
+     * @return NotFoundContainerException
      */
-    public static function entryNotFound(string $entry)
+    public static function entryNotFound(string $entry): NotFoundContainerException
     {
-        return new static("Entry " . $entry . " not found");
+        return new self('Entry ' . $entry . ' not found');
     }
 }

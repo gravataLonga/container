@@ -1,76 +1,68 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests;
 
 use Gravatalonga\Container\Container;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
 
-class ContainerArrayAccessTest extends TestCase
+/**
+ * @internal
+ * @coversDefaultClass
+ */
+final class ContainerArrayAccessTest extends TestCase
 {
-    /**
-     * @test
-     */
-    public function can_use_offset_set()
+    public function testCanUseOffsetExists()
     {
         $container = new Container();
-        $container['fact'] = function (ContainerInterface $container) {
-            return rand(0, 100);
+        $container['fact'] = static function (ContainerInterface $container) {
+            return mt_rand(1, 100);
         };
 
-        $this->assertTrue($container->has('fact'));
-        $this->assertNotEmpty($container->get('fact'));
-        $this->assertGreaterThanOrEqual(0, $container->get('fact'));
-        $this->assertNotSame($container->get('fact'), $container->get('fact'));
+        self::assertTrue(isset($container['fact']), "cannot find entry using 'isset'");
+        self::assertNotEmpty($container['fact'], "cannot find entry using 'empty'");
     }
 
-    /**
-     * @test
-     */
-    public function can_use_offset_get()
+    public function testCanUseOffsetGet()
     {
         $container = new Container();
-        $container['fact'] = function (ContainerInterface $container) {
-            return rand(1, 100);
+        $container['fact'] = static function (ContainerInterface $container) {
+            return mt_rand(1, 100);
         };
 
-        $this->assertGreaterThanOrEqual(1, $container['fact']);
+        self::assertGreaterThanOrEqual(1, $container['fact']);
     }
 
-    /**
-     * @test
-     */
-    public function can_use_offset_exists()
+    public function testCanUseOffsetSet()
     {
         $container = new Container();
-        $container['fact'] = function (ContainerInterface $container) {
-            return rand(1, 100);
+        $container['fact'] = static function (ContainerInterface $container) {
+            return mt_rand(0, 100);
         };
 
-        $this->assertTrue(isset($container['fact']), "cannot find entry using 'isset'");
-        $this->assertFalse(empty($container['fact']), "cannot find entry using 'empty'");
+        self::assertTrue($container->has('fact'));
+        self::assertNotEmpty($container->get('fact'));
+        self::assertGreaterThanOrEqual(0, $container->get('fact'));
+        self::assertNotSame($container->get('fact'), $container->get('fact'));
     }
 
-    /**
-     * @test
-     */
-    public function can_use_offset_unset()
+    public function testCanUseOffsetUnset()
     {
         $container = new Container();
-        $container->share('hello', function () {
+        $container->share('hello', static function () {
             return 'world';
         });
-        $container->set('my', function (ContainerInterface $container) {
+        $container->set('my', static function (ContainerInterface $container) {
             return 'you';
         });
         $container->set('my-constant', '123');
 
-        unset($container['hello']);
-        unset($container['my']);
-        unset($container['my-constant']);
+        unset($container['hello'], $container['my'], $container['my-constant']);
 
-        $this->assertFalse($container->has('hello'));
-        $this->assertFalse($container->has('my'));
-        $this->assertFalse($container->has('my-constant'));
+        self::assertFalse($container->has('hello'));
+        self::assertFalse($container->has('my'));
+        self::assertFalse($container->has('my-constant'));
     }
 }
