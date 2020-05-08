@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests;
 
 use Gravatalonga\Container\Container;
@@ -13,115 +15,95 @@ use Tests\Stub\FooBarWithNullClass;
 use Tests\Stub\FooBarWithoutBuiltInTypeClass;
 use Tests\Stub\FooInterface;
 
-class ResolveConstructionTest extends TestCase
+/**
+ * @internal
+ * @coversDefaultClass
+ */
+final class ResolveConstructionTest extends TestCase
 {
-    /**
-     * @test
-     */
-    public function can_resolve_class_from_qualified_name_concrete()
+    public function testCanResolveBuitinTypeOfFactory()
     {
         $container = new Container();
-        $container->factory(FooInterface::class, function () {
-            return new Bar();
+        $container->set('myVar', '123');
+        $container->factory('complexVar', static function (ContainerInterface $container, $myVar = null) {
+            return 'abc' . $myVar;
         });
 
-        $this->assertInstanceOf(Bar::class, $container->get(FooInterface::class));
+        self::assertTrue($container->has('myVar'));
+        self::assertTrue($container->has('complexVar'));
+        self::assertSame('123', $container->get('myVar'));
+        self::assertSame('abc123', $container->get('complexVar'));
     }
 
-    /**
-     * @test
-     */
-    public function can_resolve_construction_for_class()
-    {
-        $container = new Container();
-        $container->factory(FooInterface::class, function () {
-            return new Bar();
-        });
-
-        $this->assertInstanceOf(Dog::class, $container->get(Dog::class));
-    }
-
-    /**
-     * @test
-     */
-    public function can_resolve_by_var_name_from_container()
+    public function testCanResolveByVarNameFromContainer()
     {
         $container = new Container();
         $container->set('name', 'my-var');
 
         $class = $container->get(FooBarClass::class);
 
-        $this->assertInstanceOf(FooBarClass::class, $class);
-        $this->assertEquals('my-var', $class->name);
+        self::assertInstanceOf(FooBarClass::class, $class);
+        self::assertEquals('my-var', $class->name);
     }
 
-    /**
-     * @test
-     */
-    public function can_resolve_to_null_if_cant_resolve_from_container()
+    public function testCanResolveClassFromContainerIfDontHaveArgumentFromConstructor()
     {
         $container = new Container();
 
-        $class = $container->get(FooBarWithNullClass::class);
+        $class = $container->get(EmptyConstructionTest::class);
 
-        $this->assertInstanceOf(FooBarWithNullClass::class, $class);
-        $this->assertEquals(null, $class->name);
+        self::assertInstanceOf(EmptyConstructionTest::class, $class);
     }
 
-    /**
-     * @test
-     */
-    public function if_param_is_nullable_but_we_have_value_from_container()
+    public function testCanResolveClassFromQualifiedNameConcrete()
     {
         $container = new Container();
-        $container->set('name', 'my-var');
+        $container->factory(FooInterface::class, static function () {
+            return new Bar();
+        });
 
-        $class = $container->get(FooBarWithNullClass::class);
-
-        $this->assertInstanceOf(FooBarWithNullClass::class, $class);
-        $this->assertEquals('my-var', $class->name);
+        self::assertInstanceOf(Bar::class, $container->get(FooInterface::class));
     }
 
-    /**
-     * @test
-     */
-    public function can_resolve_from_container_without_builtin_type()
+    public function testCanResolveConstructionForClass()
+    {
+        $container = new Container();
+        $container->factory(FooInterface::class, static function () {
+            return new Bar();
+        });
+
+        self::assertInstanceOf(Dog::class, $container->get(Dog::class));
+    }
+
+    public function testCanResolveFromContainerWithoutBuiltinType()
     {
         $container = new Container();
         $container->set('name', 'my-var');
 
         $class = $container->get(FooBarWithoutBuiltInTypeClass::class);
 
-        $this->assertInstanceOf(FooBarWithoutBuiltInTypeClass::class, $class);
-        $this->assertEquals('my-var', $class->name);
+        self::assertInstanceOf(FooBarWithoutBuiltInTypeClass::class, $class);
+        self::assertEquals('my-var', $class->name);
     }
 
-    /**
-     * @test
-     */
-    public function can_resolve_class_from_container_if_dont_have_argument_from_constructor()
+    public function testCanResolveToNullIfCantResolveFromContainer()
     {
         $container = new Container();
 
-        $class = $container->get(EmptyConstructionTest::class);
+        $class = $container->get(FooBarWithNullClass::class);
 
-        $this->assertInstanceOf(EmptyConstructionTest::class, $class);
+        self::assertInstanceOf(FooBarWithNullClass::class, $class);
+        self::assertNull($class->name);
     }
 
-    /**
-     * @test
-     */
-    public function can_resolve_buitin_type_of_factory()
+    public function testIfParamIsNullableButWeHaveValueFromContainer()
     {
         $container = new Container();
-        $container->set('myVar', '123');
-        $container->factory('complexVar', function (ContainerInterface $container, $myVar = null) {
-            return 'abc'.$myVar;
-        });
+        $container->set('name', 'my-var');
 
-        $this->assertTrue($container->has('myVar'));
-        $this->assertTrue($container->has('complexVar'));
-        $this->assertSame('123', $container->get('myVar'));
-        $this->assertSame('abc123', $container->get('complexVar'));
+        $class = $container->get(FooBarWithNullClass::class);
+
+        self::assertInstanceOf(FooBarWithNullClass::class, $class);
+        self::assertEquals('my-var', $class->name);
     }
 }

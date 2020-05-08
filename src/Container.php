@@ -1,17 +1,27 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Gravatalonga\Container;
 
+use ArrayAccess;
 use Closure;
 use Psr\Container\ContainerInterface;
+use ReflectionClass;
+use ReflectionException;
+use ReflectionFunction;
+use ReflectionNamedType;
 use ReflectionParameter;
+use Reflector;
+
+use function array_key_exists;
 
 /**
- * Class Container
+ * Class Container.
  *
- * @package Gravatalonga\Container
+ * @implements ArrayAccess<string, mixed>
  */
-class Container implements ContainerInterface, \ArrayAccess
+class Container implements ArrayAccess, ContainerInterface
 {
     /**
      * @var ContainerInterface
@@ -19,29 +29,52 @@ class Container implements ContainerInterface, \ArrayAccess
     protected static $instance;
 
     /**
-     * @var array
+     * @var array<string, mixed>
      */
     private $bindings;
 
     /**
-     * @var array
-     */
-    private $share;
-
-    /**
-     * @var array
+     * @var array<string, mixed>
      */
     private $resolved = [];
 
     /**
+     * @var array<string, mixed>
+     */
+    private $share;
+
+    /**
      * Container constructor.
      *
-     * @param array $config
+     * @param array<string, mixed> $config
      */
     public function __construct(array $config = [])
     {
         $this->bindings = $config;
         $this->share = [];
+    }
+
+    /**
+     * Factory binding.
+     *
+     * @param string $id
+     * @param Closure $factory
+     *
+     * @return void
+     */
+    public function factory($id, Closure $factory)
+    {
+        $this->bindings[$id] = $factory;
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @throws ReflectionException
+     */
+    public function get($id)
+    {
+        return $this->resolve($id, []);
     }
 
     /**
@@ -53,54 +86,101 @@ class Container implements ContainerInterface, \ArrayAccess
     }
 
     /**
-     * @param ContainerInterface $container
-     */
-    public static function setInstance(ContainerInterface $container)
-    {
-        self::$instance = $container;
-    }
-
-    /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function has($id)
     {
-        return isset($this->bindings[$id]) || isset($this->share[$id]);
+        return array_key_exists($id, $this->bindings) || array_key_exists($id, $this->share);
     }
 
     /**
-     * Factory binding
-     *
      * @param string $id
-     * @param Closure $factory
-     * @return void
+     * @param array<string, mixed> $arguments
+     *
+     * @throws ContainerException|ReflectionException
+     *
+     * @return mixed|object
      */
-    public function factory($id, Closure $factory)
+    public function make($id, array $arguments = [])
     {
-        $this->bindings[$id] = $factory;
+        if (array_key_exists($id, $this->share)) {
+            throw ContainerException::shareOnMake($id);
+        }
+
+        return $this->resolve($id, $arguments);
     }
 
     /**
-     * Alias for Factory method
+     * @param string $offset
+     *
+     * @return bool
+     */
+    public function offsetExists($offset)
+    {
+        return $this->has($offset);
+    }
+
+    /**
+     * @param string $offset
+     *
+     * @throws ReflectionException
+     *
+     * @return mixed
+     */
+    public function offsetGet($offset)
+    {
+        return $this->get($offset);
+    }
+
+    /**
+     * @param string $offset
+     * @param mixed $value
+     */
+    public function offsetSet($offset, $value): void
+    {
+        $this->factory($offset, $value);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function offsetUnset($offset)
+    {
+        unset($this->bindings[$offset], $this->share[$offset]);
+    }
+
+    /**
+     * Alias for Factory method.
      *
      * @param string $id
      * @param mixed $factory
+     *
      * @return void
      */
     public function set($id, $factory)
     {
         if ($factory instanceof Closure) {
             $this->factory($id, $factory);
+
             return;
         }
         $this->bindings[$id] = $factory;
     }
 
     /**
-     * Share rather resolve as factory
+     * @param ContainerInterface $container
+     */
+    public static function setInstance(ContainerInterface $container): void
+    {
+        self::$instance = $container;
+    }
+
+    /**
+     * Share rather resolve as factory.
      *
      * @param string $id
      * @param Closure $factory
+     *
      * @return void
      */
     public function share($id, Closure $factory)
@@ -109,37 +189,58 @@ class Container implements ContainerInterface, \ArrayAccess
     }
 
     /**
-     * @inheritDoc
-     * @throws \ReflectionException
+     * @param ReflectionParameter[] $params
+     * @param array<string, mixed> $arguments
+     *
+     * @return array<int, string>
      */
-    public function get($id)
+    protected function buildDependencies(array $params, array $arguments = [])
     {
-        return $this->resolve($id, []);
-    }
+        return array_map(
+            function (ReflectionParameter $param) use ($arguments) {
+                if (true === array_key_exists($param->getName(), $arguments)) {
+                    return $arguments[$param->getName()];
+                }
 
-    /**
-     * @param $id
-     * @param array $arguments
-     * @return mixed|object
-     * @throws NotFoundContainerException
-     * @throws \ReflectionException
-     * @throws ContainerException
-     */
-    public function make($id, array $arguments = [])
-    {
-        if (isset($this->share[$id])) {
-            throw ContainerException::shareOnMake($id);
-        }
+                /** @var ReflectionNamedType|null $type */
+                $type = $param->getType();
 
-        return $this->resolve($id, $arguments);
+                // Todo this condition is not clear.
+                if (null === $type) {
+                    if ($this->has($param->getName())) {
+                        return $this->get($param->getName());
+                    }
+
+                    throw ContainerException::findType($param->getClass());
+                }
+
+                if (true === $type->isBuiltin()) {
+                    if ($this->has($param->getName())) {
+                        return $this->get($param->getName());
+                    }
+
+                    if ($type->allowsNull()) {
+                        return null;
+                    }
+                }
+
+                if (ContainerInterface::class === $type->getName()) {
+                    return $this;
+                }
+
+                return $this->get($type->getName());
+            },
+            $params
+        );
     }
 
     /**
      * @param string $id
-     * @param array $arguments
+     * @param array<string, mixed> $arguments
+     *
+     * @throws ReflectionException
+     *
      * @return mixed|object
-     * @throws NotFoundContainerException
-     * @throws \ReflectionException
      */
     protected function resolve(string $id, array $arguments = [])
     {
@@ -149,63 +250,36 @@ class Container implements ContainerInterface, \ArrayAccess
 
         if (!$this->has($id) && !class_exists($id)) {
             throw NotFoundContainerException::entryNotFound($id);
-        } else if (!$this->has($id) && class_exists($id)) {
+        }
+
+        if (!$this->has($id) && class_exists($id)) {
             return $this->resolveClass($id, $arguments);
-        } else if ($this->has($id)) {
+        }
+
+        if ($this->has($id)) {
             return $this->resolveEntry($id, $arguments);
         }
+
         throw NotFoundContainerException::entryNotFound($id);
     }
 
     /**
-     * @param class-string|object $id
-     * @param array $arguments
-     * @return object
-     * @throws \ReflectionException
+     * @param Reflector $reflection
+     * @param array<string, mixed> $arguments
+     *
+     * @return array<int, mixed>
      */
-    protected function resolveClass($id, array $arguments = [])
-    {
-        $reflection = new \ReflectionClass($id);
-        return $reflection->newInstanceArgs($this->resolveArguments($reflection, $arguments));
-    }
-
-    /**
-     * @param string $id
-     * @param array $arguments
-     * @return mixed
-     * @throws \ReflectionException
-     */
-    protected function resolveEntry(string $id, array $arguments = [])
-    {
-        $get = $this->bindings[$id] ?? $this->share[$id];
-
-        if ($get instanceof Closure) {
-            $reflection = new \ReflectionFunction($get);
-            $value = $reflection->invokeArgs($this->resolveArguments($reflection, $arguments));
-            if (isset($this->share[$id])) {
-                $this->resolved[$id] = $value;
-            }
-            return $value;
-        }
-
-        return $get;
-    }
-
-    /**
-     * @param \Reflector $reflection
-     * @param array $arguments
-     * @return array
-     */
-    protected function resolveArguments(\Reflector $reflection, array $arguments = [])
+    protected function resolveArguments(Reflector $reflection, array $arguments = [])
     {
         $params = [];
-        if ($reflection instanceof \ReflectionClass) {
+
+        if ($reflection instanceof ReflectionClass) {
             if (!$constructor = $reflection->getConstructor()) {
                 $params = [];
             } else {
                 $params = $constructor->getParameters();
             }
-        } else if ($reflection instanceof \ReflectionFunction) {
+        } elseif ($reflection instanceof ReflectionFunction) {
             if (!$params = $reflection->getParameters()) {
                 $params = [];
             }
@@ -215,72 +289,43 @@ class Container implements ContainerInterface, \ArrayAccess
     }
 
     /**
-     * @param ReflectionParameter[] $params
-     * @param array $arguments
-     * @return array<string, string>
+     * @param class-string|object $id
+     * @param array<string, mixed> $arguments
+     *
+     * @throws ReflectionException
+     *
+     * @return object
      */
-    protected function buildDependencies(array $params, array $arguments = [])
+    protected function resolveClass($id, array $arguments = [])
     {
-        return array_map(function (ReflectionParameter $param) use ($arguments) {
-            if (isset($arguments[$param->getName()])) {
-                return $arguments[$param->getName()];
-            }
+        $reflection = new ReflectionClass($id);
 
-            if (!$type = $param->getType()) {
-                if ($this->has($param->getName())) {
-                    return $this->get($param->getName());
-                }
-                throw ContainerException::findType($param->getClass());
-            }
-
-            if ($type->isBuiltin()) {
-                if ($this->has($param->getName())) {
-                    return $this->get($param->getName());
-                }
-                if ($type->allowsNull()) {
-                    return null;
-                }
-            }
-
-            if ($type->getName() === ContainerInterface::class) {
-                return $this;
-            }
-
-             return $this->get($type->getName());
-        }, $params);
+        return $reflection->newInstanceArgs($this->resolveArguments($reflection, $arguments));
     }
 
     /**
-     * @inheritDoc
+     * @param string $id
+     * @param array<string, mixed> $arguments
+     *
+     * @throws ReflectionException
+     *
+     * @return mixed
      */
-    public function offsetExists($offset)
+    protected function resolveEntry(string $id, array $arguments = [])
     {
-        return $this->has($offset);
-    }
+        $get = $this->bindings[$id] ?? $this->share[$id];
 
-    /**
-     * @inheritDoc
-     * @throws \ReflectionException
-     */
-    public function offsetGet($offset)
-    {
-        return $this->get($offset);
-    }
+        if ($get instanceof Closure) {
+            $reflection = new ReflectionFunction($get);
+            $value = $reflection->invokeArgs($this->resolveArguments($reflection, $arguments));
 
-    /**
-     * @inheritDoc
-     */
-    public function offsetSet($offset, $value)
-    {
-        $this->factory($offset, $value);
-    }
+            if (isset($this->share[$id])) {
+                $this->resolved[$id] = $value;
+            }
 
-    /**
-     * @inheritDoc
-     */
-    public function offsetUnset($offset)
-    {
-        unset($this->bindings[$offset]);
-        unset($this->share[$offset]);
+            return $value;
+        }
+
+        return $get;
     }
 }

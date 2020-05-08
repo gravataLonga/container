@@ -1,27 +1,32 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Gravatalonga\Container;
 
+use Exception;
 use Psr\Container\ContainerExceptionInterface;
+use ReflectionClass;
 
-class ContainerException extends \Exception implements ContainerExceptionInterface
+final class ContainerException extends Exception implements ContainerExceptionInterface
 {
     /**
-     * @param \ReflectionClass|null $class
+     * @param ReflectionClass|null $class
+     *
      * @return ContainerException
      */
-    public static function findType(?\ReflectionClass $class)
+    public static function findType(?ReflectionClass $class): ContainerException
     {
-        return new static("unable to find type hint of " . ($class ? $class : ''));
+        return new self('Unable to find type hint of ' . ($class ? $class->getName() : ''));
     }
 
     /**
      * @param string $id
-     * @return static
+     *
+     * @return ContainerException
      */
-    public static function shareOnMake(string $id)
+    public static function shareOnMake(string $id): ContainerException
     {
-        return new static(sprintf("Entry is share and cannot be called on make: %s", $id));
+        return new self(sprintf('Entry is shared and cannot be called on make: %s', $id));
     }
-
 }
