@@ -4,6 +4,23 @@ All notable changes to `container` will be documented in this file.
 
 Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+## 1.4.1 - 2020-05-06
+
+### Added
+- Added: GrumpPHP, thank to [drupol](https://github.com/drupol).  
+
+### Deprecated
+- Nothing
+
+### Fixed
+- Some internal change of method visibility.
+
+### Removed
+- Nothing
+
+### Security
+- Nothing
+
 ## 1.4.0 - 2020-05-06
 
 ### Added

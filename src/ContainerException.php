@@ -6,18 +6,18 @@ namespace Gravatalonga\Container;
 
 use Exception;
 use Psr\Container\ContainerExceptionInterface;
-use ReflectionClass;
+use ReflectionNamedType;
 
 final class ContainerException extends Exception implements ContainerExceptionInterface
 {
     /**
-     * @param ReflectionClass|null $class
+     * @param ReflectionNamedType|null $class
      *
      * @return ContainerException
      */
-    public static function findType(?ReflectionClass $class): ContainerException
+    public static function findType(?ReflectionNamedType $class): ContainerException
     {
-        return new self(sprintf('Unable to find type hint of %s', ($class ? $class->getName() : '')));
+        return new self(sprintf('Unable to find type hint (%s)', ($class ? $class->getName() : '')));
     }
 
     /**

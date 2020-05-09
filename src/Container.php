@@ -213,7 +213,7 @@ class Container implements ArrayAccess, ContainerInterface
                         return $this->get($param->getName());
                     }
 
-                    throw ContainerException::findType($param->getClass());
+                    throw ContainerException::findType($type);
                 }
 
                 if (true === $type->isBuiltin()) {
@@ -224,6 +224,8 @@ class Container implements ArrayAccess, ContainerInterface
                     if ($type->allowsNull()) {
                         return null;
                     }
+
+                    throw ContainerException::findType($type);
                 }
 
                 if (ContainerInterface::class === $type->getName()) {

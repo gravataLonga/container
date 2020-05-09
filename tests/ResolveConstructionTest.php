@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests;
 
 use Gravatalonga\Container\Container;
+use Gravatalonga\Container\ContainerException;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
 use Tests\Stub\Bar;
@@ -105,5 +106,27 @@ final class ResolveConstructionTest extends TestCase
 
         self::assertInstanceOf(FooBarWithNullClass::class, $class);
         self::assertEquals('my-var', $class->name);
+    }
+
+    /**
+     * @test
+     */
+    public function testGotExceptionFromVariableNameAndBuiltTypeNotIntoContainer()
+    {
+        $this->expectException(ContainerException::class);
+        $this->expectExceptionMessage("Unable to find type hint (string)");
+        $container = new Container();
+        $class = $container->get(FooBarClass::class);
+    }
+
+    /**
+     * @test
+     */
+    public function testGotExceptionFromVariableNameNotIntoContainer()
+    {
+        $this->expectException(ContainerException::class);
+        $this->expectExceptionMessage("Unable to find type hint ()");
+        $container = new Container();
+        $class = $container->get(FooBarWithoutBuiltInTypeClass::class);
     }
 }
