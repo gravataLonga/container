@@ -97,6 +97,22 @@ final class ResolveConstructionTest extends TestCase
         self::assertNull($class->name);
     }
 
+    public function testGotExceptionFromVariableNameAndBuiltTypeNotIntoContainer()
+    {
+        $this->expectException(ContainerException::class);
+        $this->expectExceptionMessage('Unable to find type hint (string)');
+        $container = new Container();
+        $class = $container->get(FooBarClass::class);
+    }
+
+    public function testGotExceptionFromVariableNameNotIntoContainer()
+    {
+        $this->expectException(ContainerException::class);
+        $this->expectExceptionMessage('Unable to find type hint ()');
+        $container = new Container();
+        $class = $container->get(FooBarWithoutBuiltInTypeClass::class);
+    }
+
     public function testIfParamIsNullableButWeHaveValueFromContainer()
     {
         $container = new Container();
@@ -106,27 +122,5 @@ final class ResolveConstructionTest extends TestCase
 
         self::assertInstanceOf(FooBarWithNullClass::class, $class);
         self::assertEquals('my-var', $class->name);
-    }
-
-    /**
-     * @test
-     */
-    public function testGotExceptionFromVariableNameAndBuiltTypeNotIntoContainer()
-    {
-        $this->expectException(ContainerException::class);
-        $this->expectExceptionMessage("Unable to find type hint (string)");
-        $container = new Container();
-        $class = $container->get(FooBarClass::class);
-    }
-
-    /**
-     * @test
-     */
-    public function testGotExceptionFromVariableNameNotIntoContainer()
-    {
-        $this->expectException(ContainerException::class);
-        $this->expectExceptionMessage("Unable to find type hint ()");
-        $container = new Container();
-        $class = $container->get(FooBarWithoutBuiltInTypeClass::class);
     }
 }
