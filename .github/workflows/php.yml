@@ -8,7 +8,7 @@ name: "Continuous Integration"
 
 jobs:
   run:
-    name: "Grumphp"
+    name: "Unit Testing"
     runs-on: ${{ matrix.operating-system }}
     strategy:
       fail-fast: false

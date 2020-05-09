@@ -19,7 +19,7 @@ use function array_key_exists;
 /**
  * Class Container.
  *
- * @implements ArrayAccess<string, mixed>
+ * @implements ContainerInterface
  */
 class Container implements ArrayAccess, ContainerInterface
 {
@@ -97,6 +97,7 @@ class Container implements ArrayAccess, ContainerInterface
      * @param string $id
      * @param array<string, mixed> $arguments
      *
+     * @throws NotFoundContainerException
      * @throws ContainerException|ReflectionException
      *
      * @return mixed|object
@@ -142,7 +143,9 @@ class Container implements ArrayAccess, ContainerInterface
     }
 
     /**
-     * {@inheritdoc}
+     * @param string $offset
+     *
+     * @return void
      */
     public function offsetUnset($offset)
     {
@@ -194,7 +197,7 @@ class Container implements ArrayAccess, ContainerInterface
      *
      * @return array<int, string>
      */
-    protected function buildDependencies(array $params, array $arguments = [])
+    private function buildDependencies(array $params, array $arguments = [])
     {
         return array_map(
             function (ReflectionParameter $param) use ($arguments) {
@@ -205,7 +208,8 @@ class Container implements ArrayAccess, ContainerInterface
                 /** @var ReflectionNamedType|null $type */
                 $type = $param->getType();
 
-                // Todo this condition is not clear.
+                // in case we can't find type hint, we guess by variable name.
+                // e.g.: $cache it will attempt resolve 'cache' from container.
                 if (null === $type) {
                     if ($this->has($param->getName())) {
                         return $this->get($param->getName());
@@ -238,11 +242,12 @@ class Container implements ArrayAccess, ContainerInterface
      * @param string $id
      * @param array<string, mixed> $arguments
      *
+     * @throws NotFoundContainerException
      * @throws ReflectionException
      *
      * @return mixed|object
      */
-    protected function resolve(string $id, array $arguments = [])
+    private function resolve(string $id, array $arguments = [])
     {
         if (isset($this->resolved[$id])) {
             return $this->resolved[$id];
@@ -269,7 +274,7 @@ class Container implements ArrayAccess, ContainerInterface
      *
      * @return array<int, mixed>
      */
-    protected function resolveArguments(Reflector $reflection, array $arguments = [])
+    private function resolveArguments(Reflector $reflection, array $arguments = [])
     {
         $params = [];
 
@@ -296,7 +301,7 @@ class Container implements ArrayAccess, ContainerInterface
      *
      * @return object
      */
-    protected function resolveClass($id, array $arguments = [])
+    private function resolveClass($id, array $arguments = [])
     {
         $reflection = new ReflectionClass($id);
 
@@ -311,7 +316,7 @@ class Container implements ArrayAccess, ContainerInterface
      *
      * @return mixed
      */
-    protected function resolveEntry(string $id, array $arguments = [])
+    private function resolveEntry(string $id, array $arguments = [])
     {
         $get = $this->bindings[$id] ?? $this->share[$id];
 

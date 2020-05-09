@@ -11,7 +11,7 @@ Container implementation which follow PSR-11.
 
 ## Requirment  
 
-Require at least PHP 7.2 and composer.    
+Require at least PHP 7.1 and composer.    
 
 ## Install
 
@@ -40,6 +40,22 @@ echo $container->get('random'); // get random number each time you call this.
 if ($container->has('random1'))  {
     echo $container->get('random1'); // get same random number.  
 }
+```
+
+### Using Service Provider  
+
+```php
+use Gravatalonga\Container\Container;
+use Psr\Container\ContainerInterface;
+
+$container = new Container();
+$container->set('Cache', function (ContainerInterface $container) {
+    // some where you have binding this RedisClass into container... 
+    return $container->make(RedisClass::class, ['server' => 'localhost', 'username' => 12345]);
+});
+
+// then you can use...
+$cache = $container->get('Cache');
 ```
 
 Can be use like an array access also,  
@@ -99,7 +115,13 @@ Please see [CHANGELOG](CHANGELOG.md) for more information on what has changed re
 ## Testing
 
 ``` bash
-$ composer test
+$ composer grumphp
+```
+
+Or can just run,  
+
+```bash
+$ ./vendor/bin/grumphp run  
 ```
 
 ## Contributing

@@ -17,7 +17,7 @@ final class ContainerException extends Exception implements ContainerExceptionIn
      */
     public static function findType(?ReflectionClass $class): ContainerException
     {
-        return new self('Unable to find type hint of ' . ($class ? $class->getName() : ''));
+        return new self(sprintf('Unable to find type hint of %s', ($class ? $class->getName() : '')));
     }
 
     /**

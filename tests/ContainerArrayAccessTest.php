@@ -39,7 +39,7 @@ final class ContainerArrayAccessTest extends TestCase
     {
         $container = new Container();
         $container['fact'] = static function (ContainerInterface $container) {
-            return mt_rand(0, 100);
+            return mt_rand(0, 500000);
         };
 
         self::assertTrue($container->has('fact'));
