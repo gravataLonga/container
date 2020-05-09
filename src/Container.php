@@ -18,8 +18,6 @@ use function array_key_exists;
 
 /**
  * Class Container.
- *
- * @implements ContainerInterface
  */
 class Container implements ArrayAccess, ContainerInterface
 {
