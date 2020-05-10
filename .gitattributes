@@ -6,5 +6,3 @@
 /phpunit.xml                    export-ignore
 /.github                        export-ignore
 /.editorconfig                  export-ignore
-/PULL_REQUEST_TEMPLATE.md       export-ignore
-/ISSUE_TEMPLATE.md              export-ignore
