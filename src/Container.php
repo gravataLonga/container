@@ -59,8 +59,9 @@ class Container implements ArrayAccess, ContainerInterface
         $this->bindings = $config;
         $this->share = [];
 
-        $this->share(ContainerInterface::class, function () {
-            return $this;
+        $self = $this;
+        $this->share(ContainerInterface::class, function () use ($self) {
+            return $self;
         });
         $this->alias(ContainerInterface::class, Container::class);
     }
