@@ -15,7 +15,7 @@ use ReflectionParameter;
 use Reflector;
 
 use function array_key_exists;
-use function is_string;
+use function is_callable;
 
 /**
  * Class Container.
@@ -60,7 +60,7 @@ class Container implements ArrayAccess, ContainerInterface
         $this->share = [];
 
         $self = $this;
-        $this->share(ContainerInterface::class, function () use ($self) {
+        $this->share(ContainerInterface::class, static function () use ($self) {
             return $self;
         });
         $this->alias(ContainerInterface::class, Container::class);
@@ -87,13 +87,17 @@ class Container implements ArrayAccess, ContainerInterface
      * Factory binding.
      *
      * @param string $id
-     * @param Closure $factory
+     * @param callable|mixed $factory
      *
      * @return void
      */
-    public function factory($id, Closure $factory)
+    public function factory(string $id, $factory)
     {
-        $this->bindings[$id] = $factory;
+        $this->bindings[$id] = is_callable($factory) ?
+            ($factory instanceof Closure ?
+                $factory :
+                Closure::fromCallable($factory)) :
+            $factory;
     }
 
     /**
@@ -194,22 +198,11 @@ class Container implements ArrayAccess, ContainerInterface
      * @param string $id
      * @param mixed $factory
      *
-     * @throws ContainerException
-     *
      * @return void
      */
-    public function set($id, $factory)
+    public function set(string $id, $factory)
     {
-        if (!is_string($id)) {
-            throw ContainerException::entryType();
-        }
-
-        if ($factory instanceof Closure) {
-            $this->factory($id, $factory);
-
-            return;
-        }
-        $this->bindings[$id] = $factory;
+        $this->factory($id, $factory);
     }
 
     /**

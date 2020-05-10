@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Tests;
 
 use Gravatalonga\Container\Container;
-use Gravatalonga\Container\ContainerException;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
 use Psr\Container\NotFoundExceptionInterface;
@@ -21,11 +20,32 @@ final class ContainerTest extends TestCase
     {
         $rand = mt_rand(0, 10);
         $container = new Container();
+
         $container->factory('random', static function () use ($rand) {
             return $rand;
         });
 
+        $class = new class($rand) {
+            /**
+             * @var int
+             */
+            private $rand;
+
+            public function __construct(int $rand)
+            {
+                $this->rand = $rand;
+            }
+
+            public function get(): int
+            {
+                return $this->rand;
+            }
+        };
+
+        $container->factory('random1', [$class, 'get']);
+
         self::assertEquals($rand, $container->get('random'));
+        self::assertEquals($rand, $container->get('random1'));
     }
 
     public function testCanCheckIfEntryExistOnContainer()
@@ -87,15 +107,6 @@ final class ContainerTest extends TestCase
     {
         $container = new Container(['config' => true]);
         self::assertTrue($container->get('config'));
-    }
-
-    public function testCanOnlyAcceptStringForEntry()
-    {
-        $this->expectException(ContainerException::class);
-        $this->expectExceptionMessage('Entry type must be string');
-        $container = new Container();
-        $container->set(static function () {
-        }, '123');
     }
 
     public function testCanSetDirectValueRatherThanCallback()
