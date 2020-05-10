@@ -2,3 +2,4 @@ vendor
 .gitignore
 /composer.lock
 /build/
+/.phpunit.result.cache
