@@ -5,6 +5,7 @@
 [![Total Downloads][ico-downloads]][link-downloads]
 [![Coverage Status][ico-scrutinizer]][link-scrutinizer]
 [![Quality Score][ico-code-quality]][link-code-quality]
+[![Type coverage][ico-type-coverage]][link-type-coverage]
 [![PHP Unit][ico-action]][link-action]
 
 Container implementation which follow PSR-11.
@@ -218,12 +219,14 @@ The MIT License (MIT). Please see [License File](LICENSE) for more information.
 [ico-action]: https://github.com/gravataLonga/container/workflows/Continuous%20Integration/badge.svg?branch=master
 [ico-scrutinizer]: https://img.shields.io/scrutinizer/coverage/g/gravatalonga/container.svg?style=flat-square
 [ico-code-quality]: https://img.shields.io/scrutinizer/g/gravatalonga/container.svg?style=flat-square
+[ico-type-coverage]: https://shepherd.dev/github/gravataLonga/container/coverage.svg
 
 [link-packagist]: https://packagist.org/packages/gravatalonga/container
 [link-downloads]: https://packagist.org/packages/gravatalonga/container
 [link-author]: https://github.com/gravatalonga
 [link-scrutinizer]: https://scrutinizer-ci.com/g/gravatalonga/container/code-structure
 [link-code-quality]: https://scrutinizer-ci.com/g/gravatalonga/container
+[link-type-coverage]: https://shepherd.dev/github/gravataLonga/container
 [link-contributors]: https://github.com/gravataLonga/container/graphs/contributors
 [link-action]: https://github.com/gravataLonga/container/actions?query=workflow%3A%22PHP+Composer%22
 
