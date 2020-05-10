@@ -58,6 +58,7 @@ final class ContainerArrayAccessTest extends TestCase
             return 'you';
         });
         $container->set('my-constant', '123');
+        $container->get('hello');
 
         unset($container['hello'], $container['my'], $container['my-constant']);
 

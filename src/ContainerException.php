@@ -11,13 +11,13 @@ use ReflectionNamedType;
 final class ContainerException extends Exception implements ContainerExceptionInterface
 {
     /**
-     * @param ReflectionNamedType|null $class
+     * @param ReflectionNamedType|null $type
      *
      * @return ContainerException
      */
-    public static function findType(?ReflectionNamedType $class): ContainerException
+    public static function findType(?ReflectionNamedType $type): ContainerException
     {
-        return new self(sprintf('Unable to find type hint (%s)', ($class ? $class->getName() : '')));
+        return new self(sprintf('Unable to find type hint (%s)', ($type ? $type->getName() : '')));
     }
 
     /**

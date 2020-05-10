@@ -147,7 +147,7 @@ class Container implements ArrayAccess, ContainerInterface
      */
     public function offsetUnset($offset)
     {
-        unset($this->bindings[$offset], $this->share[$offset]);
+        unset($this->bindings[$offset], $this->share[$offset], $this->resolved[$offset]);
     }
 
     /**
@@ -213,7 +213,7 @@ class Container implements ArrayAccess, ContainerInterface
                         return $this->get($param->getName());
                     }
 
-                    throw ContainerException::findType($type);
+                    throw ContainerException::findType(null);
                 }
 
                 if (true === $type->isBuiltin()) {
@@ -251,10 +251,6 @@ class Container implements ArrayAccess, ContainerInterface
     {
         if (isset($this->resolved[$id])) {
             return $this->resolved[$id];
-        }
-
-        if (!$this->has($id) && !class_exists($id)) {
-            throw NotFoundContainerException::entryNotFound($id);
         }
 
         if (!$this->has($id) && class_exists($id)) {

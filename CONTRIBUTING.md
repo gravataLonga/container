@@ -26,8 +26,7 @@ We accept contributions via Pull Requests on [Github](https://github.com/gravata
 ## Running Tests
 
 ``` bash
-$ composer test
+$ composer grumphp
 ```
-
 
 **Happy coding**!

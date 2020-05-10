@@ -23,6 +23,8 @@ $ composer require gravatalonga/container
 
 ## Usage
 
+### Basic Usage  
+
 ```php
 use Gravatalonga\Container\Container;
 
@@ -42,23 +44,63 @@ if ($container->has('random1'))  {
 }
 ```
 
+When creating a new instance of Container, you can pass on first argument configurations or entries to be already binded into container.  
+
+```php
+use Gravatalonga\Container\Container;
+
+new Container([
+    'settings' => ['my-settings'], 
+    FooBar::class => function (\Psr\Container\ContainerInterface $c) { 
+        return new FooBar();
+    }
+]);
+```
+
 ### Using Service Provider  
 
 ```php
 use Gravatalonga\Container\Container;
-use Psr\Container\ContainerInterface;
+
 
 $container = new Container();
-$container->set('Cache', function (ContainerInterface $container) {
-    // some where you have binding this RedisClass into container... 
-    return $container->make(RedisClass::class, ['server' => 'localhost', 'username' => 12345]);
+$container->set(RedisClass::class, function () {
+    return new RedisClass();
 });
 
 // then you can use...
 $cache = $container->get('Cache');
 ```
 
-Can be use like an array access also,  
+When using `set`, `factory` or `share` with Closure and if you want to get `Container` it's self, you can pass type hint of `ContainerInterface` as argument.  
+
+```php
+use Gravatalonga\Container\Container;
+use Psr\Container\ContainerInterface;
+
+$container = new Container([
+    'server' => 'localhost',
+    'username' => 'root'
+]);
+
+$container->set('Cache', function (ContainerInterface $container) {
+    // some where you have binding this RedisClass into container... 
+    return $container->make(RedisClass::class, [
+        'server' => $container->get('server'), 
+        'username' => $container->get('username')
+    ]);
+});
+
+// factory is alias for set.  
+$container->factory('CacheManager', function() {
+    return new CacheManager();
+});
+
+// then you can use...
+$cache = $container->get('Cache');
+```
+
+### Using Array like access  
 
 ```php
 use Gravatalonga\Container\Container;
@@ -73,7 +115,38 @@ if (isset($container[FooBar::class])) {
 }
 ```  
 
-In advance usage, you can resolve class which not set into container. Our container it will attemp resolve class from builtin/type hint arguments of constructions.  
+### Advance usage  
+
+You can resolve class which not set into container. Our container it will attempt resolve from builtin/type hint arguments of constructions.  
+
+> **Information**: Builtin is type which is built in on PHP, which is `string`, `int`, `boolean`, etc. Type Hint is type which is created by user land, for example, when creating a class you are creating a new type.  
+
+### Using Type Hint Class  
+
+```php
+use Gravatalonga\Container\Container;
+
+class FooBar {}
+
+class Test
+{
+    public function __construct(FooBar $foobar)
+    {
+        $this->foobar = $foobar;
+    }
+}
+
+$container = new Container(); 
+$container->set(FooBar::class, function () {
+    return new FooBar();
+});
+
+$container->get(Test::class); // FooBar it will inject into Test class.  
+```
+
+**Note:** We only support resolving auto wiring argument on construction if they is binded into container. Otherwise it will throw an exception.  
+
+### Using Built in type  
 
 ```php
 use Gravatalonga\Container\Container;
@@ -91,7 +164,7 @@ $container->set('name', 'my-var');
 $container->get(Test::class); // my-var it will inject into Test class.  
 ```  
 
-If argument accept nullable it will attemp resolve if not, it will inject null as argument.  
+If argument accept nullable it will attempt resolve if not, it will inject null as argument.  
 
 ```php
 use Gravatalonga\Container\Container;
