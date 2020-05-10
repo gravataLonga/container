@@ -59,11 +59,24 @@ final class ContainerArrayAccessTest extends TestCase
         });
         $container->set('my-constant', '123');
         $container->get('hello');
+        $container->alias('my', 'yours');
 
-        unset($container['hello'], $container['my'], $container['my-constant']);
+        unset($container['hello'], $container['my'], $container['my-constant'], $container['yours']);
 
         self::assertFalse($container->has('hello'));
         self::assertFalse($container->has('my'));
         self::assertFalse($container->has('my-constant'));
+        self::assertFalse($container->has('yours'));
+    }
+
+    public function testCanUserAliasFromArraySet()
+    {
+        $container = new Container();
+        $container->share('hello', static function () {
+            return 'world';
+        });
+        $container->alias('hello', 'h');
+
+        self::assertTrue(isset($container['h']));
     }
 }

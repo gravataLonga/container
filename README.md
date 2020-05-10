@@ -113,6 +113,25 @@ if (isset($container[FooBar::class])) {
 }
 ```  
 
+### Alias  
+
+Alias like the name indicate, it to make a possibility to make an alias from one entry to another. It will throw exception 
+
+```php
+use Gravatalonga\Container\Container;
+
+$container = new Container();  
+$container->set(FooBar::class, function(ContainerInterface $container) {
+    return new FooBar($container->get('settings'));
+});
+
+$container->alias(FooBar::class, 'foo.bar');
+
+$foobar = $container->get('foo.bar');
+```
+
+
+
 ### Advance usage  
 
 You can resolve class which not set into container. Our container it will attempt resolve from builtin/type hint arguments of constructions.  

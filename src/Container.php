@@ -15,6 +15,7 @@ use ReflectionParameter;
 use Reflector;
 
 use function array_key_exists;
+use function is_string;
 
 /**
  * Class Container.
@@ -25,6 +26,11 @@ class Container implements ArrayAccess, ContainerInterface
      * @var ContainerInterface
      */
     protected static $instance;
+
+    /**
+     * @var array<string, string>
+     */
+    private $aliases = [];
 
     /**
      * @var array<string, mixed>
@@ -45,11 +51,35 @@ class Container implements ArrayAccess, ContainerInterface
      * Container constructor.
      *
      * @param array<string, mixed> $config
+     *
+     * @throws NotFoundContainerException
      */
     public function __construct(array $config = [])
     {
         $this->bindings = $config;
         $this->share = [];
+
+        $this->share(ContainerInterface::class, function () {
+            return $this;
+        });
+        $this->alias(ContainerInterface::class, Container::class);
+    }
+
+    /**
+     * @param string $entry
+     * @param string $alias
+     *
+     * @throws NotFoundContainerException
+     *
+     * @return void
+     */
+    public function alias($entry, $alias)
+    {
+        if (false === $this->has($entry)) {
+            throw NotFoundContainerException::entryNotFound($entry);
+        }
+
+        $this->aliases[$alias] = $entry;
     }
 
     /**
@@ -88,7 +118,9 @@ class Container implements ArrayAccess, ContainerInterface
      */
     public function has($id)
     {
-        return array_key_exists($id, $this->bindings) || array_key_exists($id, $this->share);
+        return array_key_exists($id, $this->bindings) ||
+                array_key_exists($id, $this->share) ||
+                array_key_exists($id, $this->aliases);
     }
 
     /**
@@ -147,7 +179,12 @@ class Container implements ArrayAccess, ContainerInterface
      */
     public function offsetUnset($offset)
     {
-        unset($this->bindings[$offset], $this->share[$offset], $this->resolved[$offset]);
+        unset(
+            $this->bindings[$offset],
+            $this->share[$offset],
+            $this->resolved[$offset],
+            $this->aliases[$offset]
+        );
     }
 
     /**
@@ -156,10 +193,16 @@ class Container implements ArrayAccess, ContainerInterface
      * @param string $id
      * @param mixed $factory
      *
+     * @throws ContainerException
+     *
      * @return void
      */
     public function set($id, $factory)
     {
+        if (!is_string($id)) {
+            throw ContainerException::entryType();
+        }
+
         if ($factory instanceof Closure) {
             $this->factory($id, $factory);
 
@@ -228,10 +271,6 @@ class Container implements ArrayAccess, ContainerInterface
                     throw ContainerException::findType($type);
                 }
 
-                if (ContainerInterface::class === $type->getName()) {
-                    return $this;
-                }
-
                 return $this->get($type->getName());
             },
             $params
@@ -251,6 +290,10 @@ class Container implements ArrayAccess, ContainerInterface
     {
         if (true === array_key_exists($id, $this->resolved)) {
             return $this->resolved[$id];
+        }
+
+        if (true === array_key_exists($id, $this->aliases)) {
+            return $this->resolve($this->aliases[$id], $arguments);
         }
 
         if ((false === $this->has($id)) && (true === class_exists($id))) {

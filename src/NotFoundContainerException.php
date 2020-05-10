@@ -16,6 +16,6 @@ final class NotFoundContainerException extends Exception implements NotFoundExce
      */
     public static function entryNotFound(string $entry): NotFoundContainerException
     {
-        return new self('Entry ' . $entry . ' not found');
+        return new self(sprintf('Entry %s not found', $entry));
     }
 }

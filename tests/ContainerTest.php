@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests;
 
 use Gravatalonga\Container\Container;
+use Gravatalonga\Container\ContainerException;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
 use Psr\Container\NotFoundExceptionInterface;
@@ -88,6 +89,15 @@ final class ContainerTest extends TestCase
         self::assertTrue($container->get('config'));
     }
 
+    public function testCanOnlyAcceptStringForEntry()
+    {
+        $this->expectException(ContainerException::class);
+        $this->expectExceptionMessage('Entry type must be string');
+        $container = new Container();
+        $container->set(static function () {
+        }, '123');
+    }
+
     public function testCanSetDirectValueRatherThanCallback()
     {
         $container = new Container();
@@ -105,7 +115,7 @@ final class ContainerTest extends TestCase
     {
         $container = new Container();
         $container->share('random', static function () {
-            return mt_rand(0, 1000);
+            return new stdClass();
         });
         self::assertTrue($container->has('random'));
     }
@@ -114,9 +124,9 @@ final class ContainerTest extends TestCase
     {
         $container = new Container();
         $container->set('random', static function () {
-            return mt_rand(0, 1000);
+            return new stdClass();
         });
-        self::assertNotEquals($container->get('random'), $container->get('random'));
+        self::assertNotSame($container->get('random'), $container->get('random'));
     }
 
     public function testMustThrowExceptionWhenTryGetEntryDontExists()
