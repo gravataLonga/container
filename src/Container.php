@@ -209,7 +209,7 @@ class Container implements ArrayAccess, ContainerInterface
                 // in case we can't find type hint, we guess by variable name.
                 // e.g.: $cache it will attempt resolve 'cache' from container.
                 if (null === $type) {
-                    if ($this->has($param->getName())) {
+                    if (true === $this->has($param->getName())) {
                         return $this->get($param->getName());
                     }
 
@@ -217,11 +217,11 @@ class Container implements ArrayAccess, ContainerInterface
                 }
 
                 if (true === $type->isBuiltin()) {
-                    if ($this->has($param->getName())) {
+                    if (true === $this->has($param->getName())) {
                         return $this->get($param->getName());
                     }
 
-                    if ($type->allowsNull()) {
+                    if (true === $type->allowsNull()) {
                         return null;
                     }
 
@@ -249,15 +249,15 @@ class Container implements ArrayAccess, ContainerInterface
      */
     private function resolve(string $id, array $arguments = [])
     {
-        if (isset($this->resolved[$id])) {
+        if (true === array_key_exists($id, $this->resolved)) {
             return $this->resolved[$id];
         }
 
-        if (!$this->has($id) && class_exists($id)) {
+        if ((false === $this->has($id)) && (true === class_exists($id))) {
             return $this->resolveClass($id, $arguments);
         }
 
-        if ($this->has($id)) {
+        if (true === $this->has($id)) {
             return $this->resolveEntry($id, $arguments);
         }
 
@@ -275,15 +275,13 @@ class Container implements ArrayAccess, ContainerInterface
         $params = [];
 
         if ($reflection instanceof ReflectionClass) {
-            if (!$constructor = $reflection->getConstructor()) {
-                $params = [];
-            } else {
+            if (null !== $constructor = $reflection->getConstructor()) {
                 $params = $constructor->getParameters();
             }
-        } elseif ($reflection instanceof ReflectionFunction) {
-            if (!$params = $reflection->getParameters()) {
-                $params = [];
-            }
+        }
+
+        if ($reflection instanceof ReflectionFunction) {
+            $params = $reflection->getParameters();
         }
 
         return $this->buildDependencies($params, $arguments);
@@ -320,7 +318,7 @@ class Container implements ArrayAccess, ContainerInterface
             $reflection = new ReflectionFunction($get);
             $value = $reflection->invokeArgs($this->resolveArguments($reflection, $arguments));
 
-            if (isset($this->share[$id])) {
+            if (true === array_key_exists($id, $this->share)) {
                 $this->resolved[$id] = $value;
             }
 
