@@ -1,179 +1,46 @@
-# Changelog
+# Change Log
 
-All notable changes to `container` will be documented in this file.
+## [1.5.0](https://github.com/gravataLonga/container/tree/1.5.0) (2020-05-10)
+[Full Changelog](https://github.com/gravataLonga/container/compare/1.4.2...1.5.0)
 
-Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
+**Merged pull requests:**
 
-## 1.4.2 - 2020-05-10
+- Let callable type be used. [\#4](https://github.com/gravataLonga/container/pull/4) ([drupol](https://github.com/drupol))
+- Minor cleanup, minor optimizations and simplifications. [\#3](https://github.com/gravataLonga/container/pull/3) ([drupol](https://github.com/drupol))
 
-### Added
-- More testing to covering more edges cases.  
-- Benchmarking to test speed.  
-- Documentations corrections thank to [drupol](https://github.com/drupol).  
+## [1.4.2](https://github.com/gravataLonga/container/tree/1.4.2) (2020-05-10)
+[Full Changelog](https://github.com/gravataLonga/container/compare/1.4.1...1.4.2)
 
-### Deprecated
-- Nothing
+**Merged pull requests:**
 
-### Fixed
-- Organize some files inside the correct folder, thank to [drupol](https://github.com/drupol).  
-- PHPStan give some error on `findType` on `ContainerException`.  
+- Move some files around. [\#2](https://github.com/gravataLonga/container/pull/2) ([drupol](https://github.com/drupol))
 
+## [1.4.1](https://github.com/gravataLonga/container/tree/1.4.1) (2020-05-09)
+[Full Changelog](https://github.com/gravataLonga/container/compare/1.4.0...1.4.1)
 
-### Removed
-- Nothing
+**Merged pull requests:**
 
-### Security
-- Nothing
+- Use drupol/php-conventions [\#1](https://github.com/gravataLonga/container/pull/1) ([drupol](https://github.com/drupol))
 
-## 1.4.1 - 2020-05-06
+## [1.4.0](https://github.com/gravataLonga/container/tree/1.4.0) (2020-05-06)
+[Full Changelog](https://github.com/gravataLonga/container/compare/1.3.1...1.4.0)
 
-### Added
-- Added: GrumpPHP, thank to [drupol](https://github.com/drupol).  
+## [1.3.1](https://github.com/gravataLonga/container/tree/1.3.1) (2020-05-05)
+[Full Changelog](https://github.com/gravataLonga/container/compare/1.3.0...1.3.1)
 
-### Deprecated
-- Nothing
+## [1.3.0](https://github.com/gravataLonga/container/tree/1.3.0) (2020-05-03)
+[Full Changelog](https://github.com/gravataLonga/container/compare/1.2.1...1.3.0)
 
-### Fixed
-- Some internal change of method visibility.
+## [1.2.1](https://github.com/gravataLonga/container/tree/1.2.1) (2020-05-03)
+[Full Changelog](https://github.com/gravataLonga/container/compare/1.2.0...1.2.1)
 
-### Removed
-- Nothing
+## [1.2.0](https://github.com/gravataLonga/container/tree/1.2.0) (2020-04-30)
+[Full Changelog](https://github.com/gravataLonga/container/compare/1.1.0...1.2.0)
 
-### Security
-- Nothing
+## [1.1.0](https://github.com/gravataLonga/container/tree/1.1.0) (2020-04-19)
+[Full Changelog](https://github.com/gravataLonga/container/compare/1.0.0...1.1.0)
 
-## 1.4.0 - 2020-05-06
-
-### Added
-- ```make(string $id, array $arguments = [])``` it will resolve a dependency from container with argument supplier
-if argument not supplier it will resolve with information of container.  
-- ```ContainerException``` it will raise an exception if called for entry registed as ```share```.  
-
-### Deprecated
-- Nothing
-
-### Fixed
-- Nothing
-
-### Removed
-- Nothing
-
-### Security
-- Nothing
-
-## 1.3.1 - 2020-05-05
-
-### Added
-- Nothing
-
-### Deprecated
-- Nothing
-
-### Fixed
-- When passing a factory function, the argument aren't resolve by container, only resolving 
-typehint of class. Now we can support resolve dependencies on factory.
-- If you typehint ```ContainerInterface``` it will resolve itself into factory.  
-
-### Removed
-- Nothing
-
-### Security
-- Nothing
-
-## 1.3.0 - 2020-05-03
-
-### Added
-- Can resolve built in type of class.  
-- If argument on construct is nullable, then if can't be resolve it will inject null class.  
-
-### Deprecated
-- Nothing
-
-### Fixed
-- Nothing
-
-### Removed
-- Nothing
-
-### Security
-- Nothing
-
-## 1.2.1 - 2020-05-03
-
-### Added
-- Nothing
-
-### Deprecated
-- Nothing
-
-### Fixed
-- Namespaces is now inside the correct namespaces. Change from `Gravatalonga\Container` to `Gravatalonga\Container\Container`.  
-
-### Removed
-- Nothing
-
-### Security
-- Nothing
+## [1.0.0](https://github.com/gravataLonga/container/tree/1.0.0) (2020-04-18)
 
 
-## 1.2.0 - 2020-05-01
-
-### Added
-- `set` can accept mixed value as second argument rather than Closure   
-- `offsetGet` a way to get entry from container. Ease way to get entry like `$container['entry']`  
-- `offsetSet` get entry from container. Easy way to include entry to container like `$container['entry'] = "ola";`  
-- `offsetExists` it's same as `has`.  
-- `offsetUnset` remove entry from `$container`    
-
-### Deprecated
-- Nothing
-
-### Fixed
-- Nothing
-
-### Removed
-- Nothing
-
-### Security
-- Nothing
-
-
-## 1.1.0 - 2020-04-19
-
-### Added
-- `getInstance` get container instance  
-- `setInstance` set container itself inside the container  
-
-### Deprecated
-- Nothing
-
-### Fixed
-- Nothing
-
-### Removed
-- Nothing
-
-### Security
-- Nothing
-
-
-## 1.0 - 2020-04-18
-
-### Added
-- `share` method which resolve to same instance  
-- `get` get entry  
-- `has` check if entry exists on container  
-- `set` it is alias for `make`  
-- `make` add entry in factory maner.  
-
-### Deprecated
-- Nothing
-
-### Fixed
-- Nothing
-
-### Removed
-- Nothing
-
-### Security
-- Nothing
+\* *This Change Log was automatically generated by [github_changelog_generator](https://github.com/skywinder/Github-Changelog-Generator)*

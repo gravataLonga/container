@@ -1,0 +1,9 @@
+github:
+  changelog:
+    user: gravataLonga
+    project: container
+    filename: CHANGELOG.md
+    release:
+      branch: master
+    between-tags: $(git tag --sort=-creatordate --merged '${github.changelog.release.branch}' | tr '\n' ',')
+    extra: --no-unreleased
