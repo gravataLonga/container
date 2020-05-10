@@ -20,14 +20,14 @@ class ContainerBench
      */
     public function benchFactory()
     {
-        $this->container->set('my-logger', static function () {
-            return mt_rand(0, 1000);
-        });
         $this->container->get('my-logger');
     }
 
     public function init()
     {
         $this->container = new Container();
+        $this->container->set('my-logger', static function () {
+            return mt_rand(0, 1000);
+        });
     }
 }
