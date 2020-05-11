@@ -4,6 +4,24 @@ All notable changes to `container` will be documented in this file.
 
 Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+## 1.5.0 - 2020-06-09
+
+### Added
+- new feature added `factory` and `set` accept array callable, e.g.: `$container->set('my-entry', [Test::class, 'getFoo']);`  
+- new feature added `alias`, in order to make aliases to match one entry to another.  
+
+### Deprecated
+- Nothing
+
+### Fixed
+- Nothing
+
+### Removed
+- Nothing
+
+### Security
+- Nothing
+
 ## 1.4.2 - 2020-05-10
 
 ### Added
