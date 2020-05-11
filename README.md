@@ -116,7 +116,7 @@ if (isset($container[FooBar::class])) {
 
 ### Alias  
 
-Alias like the name indicate, it to make a possibility to make an alias from one entry to another. It will throw exception 
+Alias like the name indicate, it to make a possibility to make an alias from one entry to another. It will throw an exception.   
 
 ```php
 use Gravatalonga\Container\Container;
@@ -131,7 +131,23 @@ $container->alias(FooBar::class, 'foo.bar');
 $foobar = $container->get('foo.bar');
 ```
 
+### Callable as alternative  
 
+```php  
+use Gravatalonga\Container\Container;
+
+$class = new class {
+    public function get(): int
+    {
+        return mt_rand(0, 100);
+    }
+};
+
+$container = new Container();  
+$container->factory('random', [$class, 'get']);
+
+$foobar = $container->get('random'); // it will get random int
+```
 
 ### Advance usage  
 
