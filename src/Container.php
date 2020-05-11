@@ -328,7 +328,7 @@ class Container implements ArrayAccess, ContainerInterface
     }
 
     /**
-     * @param class-string|object $id
+     * @param mixed $id
      * @param array<string, mixed> $arguments
      *
      * @throws ReflectionException
