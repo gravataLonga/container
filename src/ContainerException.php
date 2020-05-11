@@ -11,14 +11,6 @@ use ReflectionNamedType;
 final class ContainerException extends Exception implements ContainerExceptionInterface
 {
     /**
-     * @return ContainerException
-     */
-    public static function entryType(): ContainerException
-    {
-        return new self(sprintf('Entry type must be string'));
-    }
-
-    /**
      * @param ReflectionNamedType|null $type
      *
      * @return ContainerException

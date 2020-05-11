@@ -223,6 +223,9 @@ class Container implements ArrayAccess, ContainerInterface
      */
     public function share($id, Closure $factory)
     {
+        if (true === array_key_exists($id, $this->resolved)) {
+            unset($this->resolved[$id]);
+        }
         $this->share[$id] = $factory;
     }
 

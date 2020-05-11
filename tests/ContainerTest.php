@@ -92,6 +92,23 @@ final class ContainerTest extends TestCase
         self::assertTrue($container->get('config'));
     }
 
+    public function testCanOverrideShareEntryEvenItWasResolveFirst()
+    {
+        $container = new Container();
+        $container->share('entry', static function () {
+            return 'hello';
+        });
+        $entryOne = $container->get('entry');
+
+        $container->share('entry', static function () {
+            return 'world';
+        });
+
+        self::assertTrue($container->has('entry'));
+        self::assertEquals('hello', $entryOne);
+        self::assertEquals('world', $container->get('entry'));
+    }
+
     public function testCanSetDirectValueRatherThanCallback()
     {
         $container = new Container();
@@ -128,6 +145,21 @@ final class ContainerTest extends TestCase
         $container = new Container();
         $this->expectException(NotFoundExceptionInterface::class);
         $container->get('entry');
+    }
+
+    public function testShareCanOverrideSameEntry()
+    {
+        $container = new Container();
+        $container->share('entry', static function () {
+            return 'hello';
+        });
+
+        $container->share('entry', static function () {
+            return 'world';
+        });
+
+        self::assertTrue($container->has('entry'));
+        self::assertEquals('world', $container->get('entry'));
     }
 
     public function testWhenResolveFromShareBindingItReturnSameValue()
