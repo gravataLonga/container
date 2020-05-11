@@ -19,29 +19,12 @@ final class ContainerTest extends TestCase
     public function testCanBindDependency()
     {
         $rand = mt_rand(0, 10);
+        $class = $this->newClass($rand);
         $container = new Container();
 
         $container->factory('random', static function () use ($rand) {
             return $rand;
         });
-
-        $class = new class($rand) {
-            /**
-             * @var int
-             */
-            private $rand;
-
-            public function __construct(int $rand)
-            {
-                $this->rand = $rand;
-            }
-
-            public function get(): int
-            {
-                return $this->rand;
-            }
-        };
-
         $container->factory('random1', [$class, 'get']);
 
         self::assertEquals($rand, $container->get('random'));
@@ -154,5 +137,25 @@ final class ContainerTest extends TestCase
             return mt_rand(1, 1000);
         });
         self::assertEquals($container->get('random'), $container->get('random'));
+    }
+
+    private function newClass($rand)
+    {
+        return new class($rand) {
+            /**
+             * @var int
+             */
+            private static $rand;
+
+            public function __construct(int $rand)
+            {
+                self::$rand = $rand;
+            }
+
+            public function get(): int
+            {
+                return self::$rand;
+            }
+        };
     }
 }
