@@ -14,6 +14,8 @@ use Tests\Stub\EmptyConstructionTest;
 use Tests\Stub\FooBarClass;
 use Tests\Stub\FooBarWithNullClass;
 use Tests\Stub\FooBarWithoutBuiltInTypeClass;
+use Tests\Stub\FooBarWithoutBuiltInTypeNullableClass;
+use Tests\Stub\FooBarWithoutBuiltInTypeStringDefaultValue;
 use Tests\Stub\FooInterface;
 
 /**
@@ -102,7 +104,7 @@ final class ResolveConstructionTest extends TestCase
         $this->expectException(ContainerException::class);
         $this->expectExceptionMessage('Unable to find type hint (string)');
         $container = new Container();
-        $class = $container->get(FooBarClass::class);
+        $container->get(FooBarClass::class);
     }
 
     public function testGotExceptionFromVariableNameNotIntoContainer()
@@ -110,7 +112,50 @@ final class ResolveConstructionTest extends TestCase
         $this->expectException(ContainerException::class);
         $this->expectExceptionMessage('Unable to find type hint ()');
         $container = new Container();
-        $class = $container->get(FooBarWithoutBuiltInTypeClass::class);
+        $container->get(FooBarWithoutBuiltInTypeClass::class);
+    }
+
+    /**
+     * @test
+     */
+    public function testCanResolveClassIfConstructorAcceptNullable()
+    {
+        // FooBarWithoutBuiltInTypeNullableClass
+        $container = new Container();
+
+        $class = $container->get(FooBarWithoutBuiltInTypeNullableClass::class);
+
+        self::assertInstanceOf(FooBarWithoutBuiltInTypeNullableClass::class, $class);
+        self::assertNull($class->name);
+    }
+
+    /**
+     * @test
+     */
+    public function testCanPassOtherDefaultValueToConstructionsIfNotIsNullable()
+    {
+        $container = new Container();
+        $class = $container->get(FooBarWithoutBuiltInTypeStringDefaultValue::class);
+
+        self::assertInstanceOf(FooBarWithoutBuiltInTypeStringDefaultValue::class, $class);
+        self::assertNotNull($class->name);
+        self::assertEquals('hello world', $class->name);
+    }
+
+    /**
+     * @test
+     */
+    public function canPassOtherDefaultValueToConstructions()
+    {
+        $container = new Container();
+        $container->set('name', function () {
+            return 'Jonathan Fontes';
+        });
+        $class2 = $container->get(FooBarWithoutBuiltInTypeStringDefaultValue::class);
+
+        self::assertInstanceOf(FooBarWithoutBuiltInTypeStringDefaultValue::class, $class2);
+        self::assertNotNull($class2->name);
+        self::assertEquals('Jonathan Fontes', $class2->name);
     }
 
     public function testIfParamIsNullableButWeHaveValueFromContainer()

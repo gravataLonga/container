@@ -124,8 +124,8 @@ class Container implements ArrayAccess, ContainerInterface
     public function has($id)
     {
         return array_key_exists($id, $this->bindings) ||
-                array_key_exists($id, $this->share) ||
-                array_key_exists($id, $this->aliases);
+            array_key_exists($id, $this->share) ||
+            array_key_exists($id, $this->aliases);
     }
 
     /**
@@ -253,7 +253,11 @@ class Container implements ArrayAccess, ContainerInterface
                         return $this->get($param->getName());
                     }
 
-                    throw ContainerException::findType(null);
+                    if (false === $param->isOptional()) {
+                        throw ContainerException::findType(null);
+                    }
+
+                    return $param->getDefaultValue();
                 }
 
                 if (true === $type->isBuiltin()) {

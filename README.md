@@ -178,7 +178,7 @@ $container->set(FooBar::class, function () {
 $container->get(Test::class); // FooBar it will inject into Test class.  
 ```
 
-**Note:** We only support resolving auto wiring argument on construction if they is binded into container. Otherwise it will throw an exception.  
+**Note:** We only support resolving auto wiring argument on construction if they is binded into container. Otherwise it will throw an exception if can't find entry into container.
 
 ### Using Built in type  
 
@@ -219,6 +219,30 @@ class Test
 $container = new Container(); 
 
 $container->get(Test::class); // null it will inject into Test class.  
+```  
+
+In also attempt to resolve auto wiring of construction by it's default value, it will check default value of `__construction` and it will pass that default value.   
+
+First case, if value is a simple built in type value.  
+```php
+use Gravatalonga\Container\Container;
+
+class Test
+{
+    /**
+     * @var string
+     */
+    private $name;
+
+    public function __construct($name = 'Jonathan Fontes')
+    {
+        $this->name = $name;
+    }
+}
+
+$container = new Container(); 
+
+$container->get(Test::class); // 'Jonathan Fontes' it will pass into container...
 ```  
 
 ## Change log
