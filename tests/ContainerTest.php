@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests;
 
-use Gravatalonga\Container\Container;
+use Gravatalonga\Container\Aware;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
 use Psr\Container\NotFoundExceptionInterface;
@@ -20,7 +20,7 @@ final class ContainerTest extends TestCase
     {
         $rand = mt_rand(0, 10);
         $class = $this->newClass($rand);
-        $container = new Container();
+        $container = new Aware();
 
         $container->factory('random', static function () use ($rand) {
             return $rand;
@@ -33,21 +33,21 @@ final class ContainerTest extends TestCase
 
     public function testCanCheckIfEntryExistOnContainer()
     {
-        $container = new Container(['db' => 'my-db']);
+        $container = new Aware(['db' => 'my-db']);
         self::assertTrue($container->has('db'));
         self::assertFalse($container->has('key-not-exists'));
     }
 
     public function testCanCreateContainer()
     {
-        $container = new Container();
+        $container = new Aware();
         self::assertInstanceOf(ContainerInterface::class, $container);
     }
 
     public function testCanGetContainerFromFactory()
     {
         $rand = mt_rand(0, 1000);
-        $container = new Container();
+        $container = new Aware();
         $container->factory('random', static function () use ($rand) {
             return $rand;
         });
@@ -61,7 +61,7 @@ final class ContainerTest extends TestCase
 
     public function testCanGetDifferentValueFromContainer()
     {
-        $container = new Container();
+        $container = new Aware();
         $container->factory('random', static function () {
             return mt_rand(0, 1000);
         });
@@ -70,7 +70,7 @@ final class ContainerTest extends TestCase
 
     public function testCanGetInstanceFromShareBinding()
     {
-        $container = new Container();
+        $container = new Aware();
         $container->share('random', static function () {
             return mt_rand(1, 1000);
         });
@@ -79,22 +79,22 @@ final class ContainerTest extends TestCase
 
     public function testCanGetInstanceOfContainer()
     {
-        $container = new Container();
+        $container = new Aware();
         $container::setInstance($container);
 
-        self::assertInstanceOf(ContainerInterface::class, Container::getInstance());
-        self::assertSame($container, Container::getInstance());
+        self::assertInstanceOf(ContainerInterface::class, Aware::getInstance());
+        self::assertSame($container, Aware::getInstance());
     }
 
     public function testCanGetValueFromContainer()
     {
-        $container = new Container(['config' => true]);
+        $container = new Aware(['config' => true]);
         self::assertTrue($container->get('config'));
     }
 
     public function testCanOverrideShareEntryEvenItWasResolveFirst()
     {
-        $container = new Container();
+        $container = new Aware();
         $container->share('entry', static function () {
             return 'hello';
         });
@@ -111,7 +111,7 @@ final class ContainerTest extends TestCase
 
     public function testCanSetDirectValueRatherThanCallback()
     {
-        $container = new Container();
+        $container = new Aware();
 
         $container->set('hello', 'world');
         $container->set('abc', 123);
@@ -124,7 +124,7 @@ final class ContainerTest extends TestCase
 
     public function testCanShareSameBindingAndCanCheckIfExists()
     {
-        $container = new Container();
+        $container = new Aware();
         $container->share('random', static function () {
             return new stdClass();
         });
@@ -133,7 +133,7 @@ final class ContainerTest extends TestCase
 
     public function testIHaveSetMethodAliasForFactory()
     {
-        $container = new Container();
+        $container = new Aware();
         $container->set('random', static function () {
             return new stdClass();
         });
@@ -142,14 +142,14 @@ final class ContainerTest extends TestCase
 
     public function testMustThrowExceptionWhenTryGetEntryDontExists()
     {
-        $container = new Container();
+        $container = new Aware();
         $this->expectException(NotFoundExceptionInterface::class);
         $container->get('entry');
     }
 
     public function testShareCanOverrideSameEntry()
     {
-        $container = new Container();
+        $container = new Aware();
         $container->share('entry', static function () {
             return 'hello';
         });
@@ -164,7 +164,7 @@ final class ContainerTest extends TestCase
 
     public function testWhenResolveFromShareBindingItReturnSameValue()
     {
-        $container = new Container();
+        $container = new Aware();
         $container->share('random', static function () {
             return mt_rand(1, 1000);
         });

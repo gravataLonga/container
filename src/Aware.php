@@ -10,7 +10,6 @@ use Psr\Container\ContainerInterface;
 use ReflectionClass;
 use ReflectionException;
 use ReflectionFunction;
-use ReflectionNamedType;
 use ReflectionParameter;
 use Reflector;
 
@@ -20,7 +19,7 @@ use function is_callable;
 /**
  * Class Container.
  */
-class Container implements ArrayAccess, ContainerInterface
+class Aware extends AutoWiringAware implements ArrayAccess, ContainerInterface
 {
     /**
      * @var ContainerInterface
@@ -63,7 +62,7 @@ class Container implements ArrayAccess, ContainerInterface
         $this->share(ContainerInterface::class, static function () use ($self) {
             return $self;
         });
-        $this->alias(ContainerInterface::class, Container::class);
+        $this->alias(ContainerInterface::class, Aware::class);
     }
 
     /**
@@ -243,36 +242,7 @@ class Container implements ArrayAccess, ContainerInterface
                     return $arguments[$param->getName()];
                 }
 
-                /** @var ReflectionNamedType|null $type */
-                $type = $param->getType();
-
-                // in case we can't find type hint, we guess by variable name.
-                // e.g.: $cache it will attempt resolve 'cache' from container.
-                if (null === $type) {
-                    if (true === $this->has($param->getName())) {
-                        return $this->get($param->getName());
-                    }
-
-                    if (false === $param->isOptional()) {
-                        throw ContainerException::findType(null);
-                    }
-
-                    return $param->getDefaultValue();
-                }
-
-                if (true === $type->isBuiltin()) {
-                    if (true === $this->has($param->getName())) {
-                        return $this->get($param->getName());
-                    }
-
-                    if (true === $type->allowsNull()) {
-                        return null;
-                    }
-
-                    throw ContainerException::findType($type);
-                }
-
-                return $this->get($type->getName());
+                return $this->autoWiringArguments($param);
             },
             $params
         );

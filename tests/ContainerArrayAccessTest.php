@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests;
 
-use Gravatalonga\Container\Container;
+use Gravatalonga\Container\Aware;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
 
@@ -16,7 +16,7 @@ final class ContainerArrayAccessTest extends TestCase
 {
     public function testCanUseOffsetExists()
     {
-        $container = new Container();
+        $container = new Aware();
         $container['fact'] = static function (ContainerInterface $container) {
             return mt_rand(1, 100);
         };
@@ -27,7 +27,7 @@ final class ContainerArrayAccessTest extends TestCase
 
     public function testCanUseOffsetGet()
     {
-        $container = new Container();
+        $container = new Aware();
         $container['fact'] = static function (ContainerInterface $container) {
             return mt_rand(1, 100);
         };
@@ -37,7 +37,7 @@ final class ContainerArrayAccessTest extends TestCase
 
     public function testCanUseOffsetSet()
     {
-        $container = new Container();
+        $container = new Aware();
         $container['fact'] = static function (ContainerInterface $container) {
             return mt_rand(0, 500000);
         };
@@ -50,7 +50,7 @@ final class ContainerArrayAccessTest extends TestCase
 
     public function testCanUseOffsetUnset()
     {
-        $container = new Container();
+        $container = new Aware();
         $container->share('hello', static function () {
             return 'world';
         });
@@ -71,7 +71,7 @@ final class ContainerArrayAccessTest extends TestCase
 
     public function testCanUserAliasFromArraySet()
     {
-        $container = new Container();
+        $container = new Aware();
         $container->share('hello', static function () {
             return 'world';
         });

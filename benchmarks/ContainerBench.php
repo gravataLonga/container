@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use Gravatalonga\Container\Container;
+use Gravatalonga\Container\Aware;
 
 /**
  * @Revs({1, 8, 64, 4096})
@@ -11,7 +11,7 @@ use Gravatalonga\Container\Container;
 class ContainerBench
 {
     /**
-     * @var Container
+     * @var Aware
      */
     private $container;
 
@@ -25,7 +25,7 @@ class ContainerBench
 
     public function init()
     {
-        $this->container = new Container();
+        $this->container = new Aware();
         $this->container->set('my-logger', static function () {
             return mt_rand(0, 1000);
         });
