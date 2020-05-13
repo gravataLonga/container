@@ -22,7 +22,8 @@
         "drupol/php-conventions": "^1.7",
         "infection/infection": "^0.13.6 || ^0.15.0",
         "phpunit/phpunit": "^7 || ^8",
-        "vimeo/psalm": "^3.11"
+        "vimeo/psalm": "^3.11",
+        "phpbench/phpbench": "@dev"
     },
     "autoload": {
         "psr-4": {
@@ -35,6 +36,7 @@
         }
     },
     "scripts": {
-        "grumphp": "grumphp run"
+        "grumphp": "grumphp run",
+        "bench": "phpbench run benchmarks/*.php --report=aggregate --retry-threshold=5"
     }
 }

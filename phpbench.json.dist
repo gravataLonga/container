@@ -1,0 +1,20 @@
+{
+    "bootstrap": "vendor/autoload.php",
+    "path": "./benchmarks",
+    "retry_threshold": 5,
+    "outputs": {
+        "my_output": {
+            "extends": "html",
+            "file": "./build/my_report.html",
+            "title": "Hello World"
+        }
+    },
+    "reports": {
+        "my_report": {
+            "extends": "aggregate"
+        }
+    },
+    "extensions": {
+        "PhpBench\\Extensions\\Reports\\ReportsExtension"
+    }
+}
