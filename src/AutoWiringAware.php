@@ -25,15 +25,7 @@ abstract class AutoWiringAware implements ContainerInterface
             throw ContainerException::findType($reflector->getName());
         }
 
-        if ($reflector->isDefaultValueAvailable()) {
-            return $reflector->getDefaultValue();
-        }
-
-        if (true === $reflector->allowsNull()) {
-            return null;
-        }
-
-        throw ContainerException::findType($reflector->getName());
+        return $reflector->getDefaultValue();
     }
 
     /**

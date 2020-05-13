@@ -4,6 +4,40 @@ All notable changes to `container` will be documented in this file.
 
 Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+## 1.5.2 - 2020-06-10
+
+### Added
+- Nothing
+
+### Deprecated
+- Nothing
+
+### Fixed
+- Remove some complexity from main class, and put it on sister class.    
+
+### Removed
+- Nothing
+
+### Security
+- Nothing
+
+## 1.5.1 - 2020-06-10
+
+### Added
+- Nothing
+
+### Deprecated
+- Nothing
+
+### Fixed
+- Add optional arguments for auto wiring.  
+
+### Removed
+- Nothing
+
+### Security
+- Nothing
+
 ## 1.5.0 - 2020-06-09
 
 ### Added
