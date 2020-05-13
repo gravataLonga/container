@@ -7,6 +7,7 @@
 [![Quality Score][ico-code-quality]][link-code-quality]
 [![Type coverage][ico-type-coverage]][link-type-coverage]
 [![PHP Unit][ico-action]][link-action]
+[![Say Thanks][ico-say-thank]][link-say-thank]
 
 Container implementation which follow PSR-11.
 
@@ -279,6 +280,8 @@ The MIT License (MIT). Please see [License File](LICENSE) for more information.
 [ico-scrutinizer]: https://img.shields.io/scrutinizer/coverage/g/gravatalonga/container.svg?style=flat-square
 [ico-code-quality]: https://img.shields.io/scrutinizer/g/gravatalonga/container.svg?style=flat-square
 [ico-type-coverage]: https://shepherd.dev/github/gravataLonga/container/coverage.svg
+[ico-say-thank]: https://img.shields.io/badge/Say%20Thanks-!-1EAEDB.svg  
+
 
 [link-packagist]: https://packagist.org/packages/gravatalonga/container
 [link-downloads]: https://packagist.org/packages/gravatalonga/container
@@ -288,4 +291,5 @@ The MIT License (MIT). Please see [License File](LICENSE) for more information.
 [link-type-coverage]: https://shepherd.dev/github/gravataLonga/container
 [link-contributors]: https://github.com/gravataLonga/container/graphs/contributors
 [link-action]: https://github.com/gravataLonga/container/actions?query=workflow%3A%22PHP+Composer%22
+[link-say-thank]: https://saythanks.io/to/jonathan.alexey16@gmail.com  
 
