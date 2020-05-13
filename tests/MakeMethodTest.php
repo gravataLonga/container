@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests;
 
-use Gravatalonga\Container\Aware;
+use Gravatalonga\Container\Container;
 use Gravatalonga\Container\ContainerException;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
@@ -22,7 +22,7 @@ final class MakeMethodTest extends TestCase
     {
         $this->expectException(ContainerException::class);
         $this->expectExceptionMessage('Entry is shared and cannot be called on make: entry');
-        $container = new Aware();
+        $container = new Container();
         $container->share('entry', static function (ContainerInterface $container, $arg, $arg2) {
             return $arg . ' ' . $arg2;
         });
@@ -32,7 +32,7 @@ final class MakeMethodTest extends TestCase
 
     public function testCanResolveArgumentOfClassByContainer()
     {
-        $container = new Aware();
+        $container = new Container();
         $container->set('name', 'my-var');
 
         $bar = $container->make(FooBarClass::class);
@@ -47,7 +47,7 @@ final class MakeMethodTest extends TestCase
      */
     public function testMakeAcceptedOnlyEntryName()
     {
-        $container = new Aware();
+        $container = new Container();
         $container->set('myFactory', static function (ContainerInterface $container) {
             return 'Hello World';
         });
@@ -58,7 +58,7 @@ final class MakeMethodTest extends TestCase
 
     public function testMakeItCanResolveClass()
     {
-        $container = new Aware();
+        $container = new Container();
 
         $bar = $container->make(Bar::class);
         self::assertInstanceOf(Bar::class, $bar);
@@ -67,7 +67,7 @@ final class MakeMethodTest extends TestCase
 
     public function testPassArgumentToBeResolveByArray()
     {
-        $container = new Aware();
+        $container = new Container();
 
         $bar = $container->make(FooBarClass::class, ['name' => 'my-var-hello']);
         self::assertEquals('my-var-hello', $bar->name);

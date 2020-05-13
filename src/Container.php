@@ -19,7 +19,7 @@ use function is_callable;
 /**
  * Class Container.
  */
-class Aware extends AutoWiringAware implements ArrayAccess, ContainerInterface
+class Container extends AutoWiringAware implements ArrayAccess, ContainerInterface
 {
     /**
      * @var ContainerInterface
@@ -62,7 +62,7 @@ class Aware extends AutoWiringAware implements ArrayAccess, ContainerInterface
         $this->share(ContainerInterface::class, static function () use ($self) {
             return $self;
         });
-        $this->alias(ContainerInterface::class, Aware::class);
+        $this->alias(ContainerInterface::class, Container::class);
     }
 
     /**

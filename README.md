@@ -25,9 +25,9 @@ composer require gravatalonga/container
 ### Basic Usage  
 
 ```php
-use Gravatalonga\Container\Aware;
+use Gravatalonga\Container\Container;
 
-$container = new Aware();
+$container = new Container();
 $container->set('random', function() {
     return rand(0, 1000);
 });
@@ -46,9 +46,9 @@ if ($container->has('random1'))  {
 When creating a new instance of Container, you can pass on first argument configurations or entries to be already binded into container.  
 
 ```php
-use Gravatalonga\Container\Aware;
+use Gravatalonga\Container\Container;
 
-new Aware([
+new Container([
     'settings' => ['my-settings'], 
     FooBar::class => function (\Psr\Container\ContainerInterface $c) { 
         return new FooBar();
@@ -59,10 +59,10 @@ new Aware([
 ### Using Service Provider  
 
 ```php
-use Gravatalonga\Container\Aware;
+use Gravatalonga\Container\Container;
 
 
-$container = new Aware();
+$container = new Container();
 $container->set(RedisClass::class, function () {
     return new RedisClass();
 });
@@ -74,10 +74,10 @@ $cache = $container->get('Cache');
 When using `set`, `factory` or `share` with Closure and if you want to get `Container` it's self, you can pass type hint of `ContainerInterface` as argument.  
 
 ```php
-use Gravatalonga\Container\Aware;
+use Gravatalonga\Container\Container;
 use Psr\Container\ContainerInterface;
 
-$container = new Aware([
+$container = new Container([
     'server' => 'localhost',
     'username' => 'root'
 ]);
@@ -102,9 +102,9 @@ $cache = $container->get('Cache');
 ### Using Array like access  
 
 ```php
-use Gravatalonga\Container\Aware;
+use Gravatalonga\Container\Container;
 
-$container = new Aware();  
+$container = new Container();  
 $container[FooBar::class] = function(ContainerInterface $container) {
     return new FooBar($container->get('settings'));
 };
@@ -119,9 +119,9 @@ if (isset($container[FooBar::class])) {
 Alias like the name indicate, it to make a possibility to make an alias from one entry to another. It will throw an exception.   
 
 ```php
-use Gravatalonga\Container\Aware;
+use Gravatalonga\Container\Container;
 
-$container = new Aware();  
+$container = new Container();  
 $container->set(FooBar::class, function(ContainerInterface $container) {
     return new FooBar($container->get('settings'));
 });
@@ -158,7 +158,7 @@ You can resolve class which not set into container. Our container it will attemp
 ### Using Type Hint Class  
 
 ```php
-use Gravatalonga\Container\Aware;
+use Gravatalonga\Container\Container;
 
 class FooBar {}
 
@@ -170,7 +170,7 @@ class Test
     }
 }
 
-$container = new Aware(); 
+$container = new Container(); 
 $container->set(FooBar::class, function () {
     return new FooBar();
 });
@@ -183,7 +183,7 @@ $container->get(Test::class); // FooBar it will inject into Test class.
 ### Using Built in type  
 
 ```php
-use Gravatalonga\Container\Aware;
+use Gravatalonga\Container\Container;
 class Test
 {
     public function __construct(string $name)
@@ -192,7 +192,7 @@ class Test
     }
 }
 
-$container = new Aware(); 
+$container = new Container(); 
 $container->set('name', 'my-var');
 
 $container->get(Test::class); // my-var it will inject into Test class.  
@@ -201,7 +201,7 @@ $container->get(Test::class); // my-var it will inject into Test class.
 If argument accept nullable it will attempt resolve; otherwise it will inject null as argument.  
 
 ```php
-use Gravatalonga\Container\Aware;
+use Gravatalonga\Container\Container;
 
 class Test
 {
@@ -216,7 +216,7 @@ class Test
     }
 }
 
-$container = new Aware(); 
+$container = new Container(); 
 
 $container->get(Test::class); // null it will inject into Test class.  
 ```  
@@ -225,7 +225,7 @@ In also attempt to resolve auto wiring of construction by it's default value, it
 
 First case, if value is a simple built in type value.  
 ```php
-use Gravatalonga\Container\Aware;
+use Gravatalonga\Container\Container;
 
 class Test
 {
@@ -240,7 +240,7 @@ class Test
     }
 }
 
-$container = new Aware(); 
+$container = new Container(); 
 
 $container->get(Test::class); // 'Jonathan Fontes' it will pass into container...
 ```  

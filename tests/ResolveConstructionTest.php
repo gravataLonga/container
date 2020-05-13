@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests;
 
-use Gravatalonga\Container\Aware;
+use Gravatalonga\Container\Container;
 use Gravatalonga\Container\ContainerException;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
@@ -26,7 +26,7 @@ final class ResolveConstructionTest extends TestCase
 {
     public function testCanPassOtherDefaultValueToConstructions()
     {
-        $container = new Aware();
+        $container = new Container();
         $container->set('name', static function () {
             return 'Jonathan Fontes';
         });
@@ -39,7 +39,7 @@ final class ResolveConstructionTest extends TestCase
 
     public function testCanResolveBuitinTypeOfFactory()
     {
-        $container = new Aware();
+        $container = new Container();
         $container->set('myVar', '123');
         $container->factory('complexVar', static function (ContainerInterface $container, $myVar = null) {
             return 'abc' . $myVar;
@@ -53,7 +53,7 @@ final class ResolveConstructionTest extends TestCase
 
     public function testCanResolveByVarNameFromContainer()
     {
-        $container = new Aware();
+        $container = new Container();
         $container->set('name', 'my-var');
 
         $class = $container->get(FooBarClass::class);
@@ -64,7 +64,7 @@ final class ResolveConstructionTest extends TestCase
 
     public function testCanResolveClassFromContainerIfDontHaveArgumentFromConstructor()
     {
-        $container = new Aware();
+        $container = new Container();
 
         $class = $container->get(EmptyConstructionTest::class);
 
@@ -73,7 +73,7 @@ final class ResolveConstructionTest extends TestCase
 
     public function testCanResolveClassFromQualifiedNameConcrete()
     {
-        $container = new Aware();
+        $container = new Container();
         $container->factory(FooInterface::class, static function () {
             return new Bar();
         });
@@ -84,7 +84,7 @@ final class ResolveConstructionTest extends TestCase
     public function testCanResolveClassIfConstructorAcceptNullable()
     {
         // FooBarWithoutBuiltInTypeNullableClass
-        $container = new Aware();
+        $container = new Container();
 
         $class = $container->get(FooBarWithoutBuiltInTypeNullableClass::class);
 
@@ -94,7 +94,7 @@ final class ResolveConstructionTest extends TestCase
 
     public function testCanResolveConstructionForClass()
     {
-        $container = new Aware();
+        $container = new Container();
         $container->factory(FooInterface::class, static function () {
             return new Bar();
         });
@@ -104,7 +104,7 @@ final class ResolveConstructionTest extends TestCase
 
     public function testCanResolveFromContainerWithoutBuiltinType()
     {
-        $container = new Aware();
+        $container = new Container();
         $container->set('name', 'my-var');
 
         $class = $container->get(FooBarWithoutBuiltInTypeClass::class);
@@ -115,7 +115,7 @@ final class ResolveConstructionTest extends TestCase
 
     public function testCanResolveToNullIfCantResolveFromContainer()
     {
-        $container = new Aware();
+        $container = new Container();
 
         $class = $container->get(FooBarWithNullClass::class);
 
@@ -125,7 +125,7 @@ final class ResolveConstructionTest extends TestCase
 
     public function testGetDefaultValueFromArgumentsList()
     {
-        $container = new Aware();
+        $container = new Container();
         $class = $container->get(FooBarWithoutBuiltInTypeStringDefaultValue::class);
 
         self::assertInstanceOf(FooBarWithoutBuiltInTypeStringDefaultValue::class, $class);
@@ -137,7 +137,7 @@ final class ResolveConstructionTest extends TestCase
     {
         $this->expectException(ContainerException::class);
         $this->expectExceptionMessage('Unable to find type hint (name)');
-        $container = new Aware();
+        $container = new Container();
         $container->get(FooBarClass::class);
     }
 
@@ -145,13 +145,13 @@ final class ResolveConstructionTest extends TestCase
     {
         $this->expectException(ContainerException::class);
         $this->expectExceptionMessage('Unable to find type hint (name)');
-        $container = new Aware();
+        $container = new Container();
         $container->get(FooBarWithoutBuiltInTypeClass::class);
     }
 
     public function testIfParamIsNullableButWeHaveValueFromContainer()
     {
-        $container = new Aware();
+        $container = new Container();
         $container->set('name', 'my-var');
 
         $class = $container->get(FooBarWithNullClass::class);

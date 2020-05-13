@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests;
 
-use Gravatalonga\Container\Aware;
+use Gravatalonga\Container\Container;
 use Gravatalonga\Container\NotFoundContainerException;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
@@ -19,7 +19,7 @@ final class AliasMethodTest extends TestCase
 {
     public function testAliasOneVarToAnotherClass()
     {
-        $container = new Aware();
+        $container = new Container();
         $container->set(Bar::class, static function () {
             return new Bar();
         });
@@ -35,7 +35,7 @@ final class AliasMethodTest extends TestCase
 
     public function testAliasOneVarToAnotherShareEntry()
     {
-        $container = new Aware();
+        $container = new Container();
         $container->share(Bar::class, static function () {
             return new Bar();
         });
@@ -51,7 +51,7 @@ final class AliasMethodTest extends TestCase
 
     public function testAliasOneVarToAnotherVar()
     {
-        $container = new Aware();
+        $container = new Container();
         $container->set('foobar', 'Hello World');
 
         $container->alias('foobar', 'hello');
@@ -63,7 +63,7 @@ final class AliasMethodTest extends TestCase
 
     public function testCanUseMakeOverAlias()
     {
-        $container = new Aware();
+        $container = new Container();
         $container->factory(FooBarWithNullClass::class, static function (ContainerInterface $container, $name = null) {
             return new FooBarWithNullClass($name);
         });
@@ -79,20 +79,20 @@ final class AliasMethodTest extends TestCase
 
     public function testContainerInterfaceIsAliasOfItSelf()
     {
-        $container = new Aware();
+        $container = new Container();
 
         self::assertTrue($container->has(ContainerInterface::class));
-        self::assertTrue($container->has(Aware::class));
+        self::assertTrue($container->has(Container::class));
         self::assertSame($container->get(ContainerInterface::class), $container->get(ContainerInterface::class));
-        self::assertSame($container->get(Aware::class), $container->get(Aware::class));
-        self::assertSame($container->get(ContainerInterface::class), $container->get(Aware::class));
+        self::assertSame($container->get(Container::class), $container->get(Container::class));
+        self::assertSame($container->get(ContainerInterface::class), $container->get(Container::class));
     }
 
     public function testGotExceptionIfAliasReferedToNonEntry()
     {
         $this->expectException(NotFoundContainerException::class);
         $this->expectExceptionMessage('Entry bar not found');
-        $container = new Aware();
+        $container = new Container();
 
         $container->alias('bar', 'foo');
 
