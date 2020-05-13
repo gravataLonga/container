@@ -1,7 +1,7 @@
 {
     "name": "gravatalonga/container",
     "type": "library",
-    "description": "Container is a library of implement of container following PSR-11",
+    "description": "Implementation of PSR-11 Container, it is lightweight yet powerful. Feature such as Lazy Factory, Factory, Optinal Share of Services, Array Access and other it can be very versatile.",
     "license": "MIT",
     "authors": [
         {
