@@ -20,10 +20,25 @@ use Tests\Stub\FooInterface;
 
 /**
  * @internal
- * @coversDefaultClass
+ * @cover \Gravatalonga\Container\AutoWiringAware
+ * @coversNothing
  */
 final class ResolveConstructionTest extends TestCase
 {
+    public function testCanPassDefaultValueOnClousure()
+    {
+        $container = new Container();
+        $container->factory('complexVar', static function (ContainerInterface $container, $myVar = 'hello world') {
+            return 'abc' . $myVar;
+        });
+
+        self::assertTrue($container->has('complexVar'));
+        self::assertSame('abchello world', $container->get('complexVar'));
+        self::assertSame('abchello world', $container->make('complexVar', []));
+        self::assertSame('abchello world', $container->make('complexVar', ['other-var' => '123']));
+        self::assertSame('abc123', $container->make('complexVar', ['myVar' => '123']));
+    }
+
     public function testCanPassOtherDefaultValueToConstructions()
     {
         $container = new Container();

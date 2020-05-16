@@ -12,7 +12,8 @@ use stdClass;
 
 /**
  * @internal
- * @coversDefaultClass
+ * @cover Container
+ * @coversNothing
  */
 final class ContainerTest extends TestCase
 {
