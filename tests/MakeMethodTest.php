@@ -14,7 +14,7 @@ use Tests\Stub\FooBarClass;
 
 /**
  * @internal
- * @covers Container
+ * @covers \Container
  */
 final class MakeMethodTest extends TestCase
 {

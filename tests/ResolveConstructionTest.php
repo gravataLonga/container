@@ -20,8 +20,8 @@ use Tests\Stub\FooInterface;
 
 /**
  * @internal
+ * @covers \Container
  * @covers \Gravatalonga\Container\AutoWiringAware
- * @covers Container
  */
 final class ResolveConstructionTest extends TestCase
 {

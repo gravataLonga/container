@@ -10,7 +10,7 @@ use Psr\Container\ContainerInterface;
 
 /**
  * @internal
- * @covers Container
+ * @covers \Container
  */
 final class ContainerArrayAccessTest extends TestCase
 {
