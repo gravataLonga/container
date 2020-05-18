@@ -129,6 +129,16 @@ class Container extends AutoWiringAware implements ArrayAccess, ContainerInterfa
 
     /**
      * @param string $id
+     *
+     * @return bool
+     */
+    public function isAlias($id)
+    {
+        return true === array_key_exists($id, $this->aliases);
+    }
+
+    /**
+     * @param string $id
      * @param array<string, mixed> $arguments
      *
      * @throws NotFoundContainerException

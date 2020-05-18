@@ -61,6 +61,17 @@ final class AliasMethodTest extends TestCase
         self::assertSame($container->get('foobar'), $container->get('hello'));
     }
 
+    public function testCanCheckIfEntryIsAliases()
+    {
+        $container = new Container();
+        $container->factory('myEntry', ['1', '2', '3']);
+        $container->alias('myEntry', 'myEntryAlias');
+
+        self::assertTrue($container->isAlias('myEntryAlias'));
+        self::assertFalse($container->isAlias('myEntry'));
+        self::assertFalse($container->isAlias('notExists'));
+    }
+
     public function testCanUseMakeOverAlias()
     {
         $container = new Container();
