@@ -20,7 +20,7 @@
     },
     "require-dev": {
         "drupol/php-conventions": "^1.7",
-        "infection/infection": "^0.13.6 || ^0.15.0",
+        "infection/infection": "^0.13.6 || ^0.16.0",
         "phpunit/phpunit": "^7 || ^8",
         "vimeo/psalm": "^3.11"
     },

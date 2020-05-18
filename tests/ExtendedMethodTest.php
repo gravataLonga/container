@@ -17,7 +17,7 @@ use TypeError;
 
 /**
  * @internal
- * @coversNothing
+ * @covers Container
  */
 final class ExtendedMethodTest extends TestCase
 {
