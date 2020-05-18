@@ -246,6 +246,39 @@ $container = new Container();
 $container->get(Test::class); // 'Jonathan Fontes' it will pass into container...
 ```  
 
+### Extend 
+
+```php
+use Gravatalonga\Container\Container;
+
+class Test
+{
+    /**
+     * @var string
+     */
+    public $name;
+
+    public function __construct($name = 'Jonathan Fontes')
+    {
+        $this->name = $name;
+    }
+}
+
+$container = new Container(); 
+
+$container->get(Test::class, function(ContainerInterface $container) {
+    return new Test;
+});
+
+$container->extend(Test::class, function(ContainerInterface $container, $test) {
+    return new Test($test->name.' - The greatest!');
+});
+
+echo $container->get(Test::class); // It will print 'Jonathan Fontes - The greatest!';  
+```
+
+Tips: The container can detected circular dependencies.  
+
 ## Change log
 
 Please see [CHANGELOG](CHANGELOG.md) for more information on what has changed recently.

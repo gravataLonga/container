@@ -5,10 +5,14 @@ declare(strict_types=1);
 namespace Tests;
 
 use Gravatalonga\Container\Container;
+use Gravatalonga\Container\ContainerException;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
 use Psr\Container\NotFoundExceptionInterface;
+use ReflectionClass;
 use stdClass;
+use Tests\Stub\CircularDependencyValue1;
+use Tests\Stub\CircularDependencyValue2;
 
 /**
  * @internal
@@ -43,6 +47,19 @@ final class ContainerTest extends TestCase
     {
         $container = new Container();
         self::assertInstanceOf(ContainerInterface::class, $container);
+    }
+
+    public function testCanDetectedCircularDependency()
+    {
+        $this->expectException(ContainerException::class);
+        $this->expectExceptionMessage('Detect Circular Dependency');
+
+        $container = new Container();
+        $container->factory(CircularDependencyValue1::class, static function (ContainerInterface $c) {
+            return new CircularDependencyValue1($c->get(CircularDependencyValue2::class));
+        });
+
+        $container->get(CircularDependencyValue1::class);
     }
 
     public function testCanGetContainerFromFactory()
@@ -105,9 +122,21 @@ final class ContainerTest extends TestCase
             return 'world';
         });
 
+        $ref = new ReflectionClass($container);
+        $ex = $ref->getProperty('resolved');
+        $ex->setAccessible(true);
+        $value = $ex->getValue($container);
+
+        self::assertArrayNotHasKey('entry', $value);
         self::assertTrue($container->has('entry'));
         self::assertEquals('hello', $entryOne);
         self::assertEquals('world', $container->get('entry'));
+
+        $ref = new ReflectionClass($container);
+        $ex = $ref->getProperty('resolved');
+        $ex->setAccessible(true);
+        $value = $ex->getValue($container);
+        self::assertArrayHasKey('entry', $value);
     }
 
     public function testCanSetDirectValueRatherThanCallback()

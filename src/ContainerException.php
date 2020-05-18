@@ -10,6 +10,14 @@ use Psr\Container\ContainerExceptionInterface;
 final class ContainerException extends Exception implements ContainerExceptionInterface
 {
     /**
+     * @return ContainerException
+     */
+    public static function circularDependency(): ContainerException
+    {
+        return new self('Detect Circular Dependency');
+    }
+
+    /**
      * @param string|null $type
      *
      * @return ContainerException

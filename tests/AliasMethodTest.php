@@ -72,6 +72,18 @@ final class AliasMethodTest extends TestCase
         self::assertFalse($container->isAlias('notExists'));
     }
 
+    public function testCannotMakeAliasFromAlias()
+    {
+        $this->expectException(NotFoundContainerException::class);
+        $this->expectExceptionMessage('Entry foo not found');
+        $container = new Container();
+        $container->set('bar', 'hello');
+        $container->alias('bar', 'foo');
+        $container->alias('foo', 'baz'); // not!
+
+        self::assertFalse($container->has('baz'));
+    }
+
     public function testCanUseMakeOverAlias()
     {
         $container = new Container();

@@ -37,6 +37,16 @@ class Container extends AutoWiringAware implements ArrayAccess, ContainerInterfa
     private $bindings;
 
     /**
+     * @var array<string, boolean>
+     */
+    private $entriesBeingResolved = [];
+
+    /**
+     * @var array <string, mixed>
+     */
+    private $extended = [];
+
+    /**
      * @var array<string, mixed>
      */
     private $resolved = [];
@@ -75,11 +85,38 @@ class Container extends AutoWiringAware implements ArrayAccess, ContainerInterfa
      */
     public function alias($entry, $alias)
     {
+        if (true === $this->isAlias($entry)) {
+            throw NotFoundContainerException::entryNotFound($entry);
+        }
+
         if (false === $this->has($entry)) {
             throw NotFoundContainerException::entryNotFound($entry);
         }
 
         $this->aliases[$alias] = $entry;
+    }
+
+    /**
+     * @param string $id
+     * @param callable $factory
+     *
+     * @throws NotFoundContainerException
+     *
+     * @return void
+     */
+    public function extend($id, callable $factory)
+    {
+        if (!$this->has($id)) {
+            throw NotFoundContainerException::entryNotFound($id);
+        }
+
+        $factory = $factory instanceof Closure ? $factory : Closure::fromCallable($factory);
+
+        if (true === array_key_exists($id, $this->resolved)) {
+            unset($this->resolved[$id]);
+        }
+
+        $this->extended[$id][] = $factory;
     }
 
     /**
@@ -197,7 +234,8 @@ class Container extends AutoWiringAware implements ArrayAccess, ContainerInterfa
             $this->bindings[$offset],
             $this->share[$offset],
             $this->resolved[$offset],
-            $this->aliases[$offset]
+            $this->aliases[$offset],
+            $this->extended[$offset]
         );
     }
 
@@ -248,6 +286,12 @@ class Container extends AutoWiringAware implements ArrayAccess, ContainerInterfa
     {
         return array_map(
             function (ReflectionParameter $param) use ($arguments) {
+                if (true === array_key_exists($param->getName(), $this->entriesBeingResolved)) {
+                    throw ContainerException::circularDependency();
+                }
+
+                $this->entriesBeingResolved[$param->getName()] = true;
+
                 if (true === array_key_exists($param->getName(), $arguments)) {
                     return $arguments[$param->getName()];
                 }
@@ -256,6 +300,18 @@ class Container extends AutoWiringAware implements ArrayAccess, ContainerInterfa
             },
             $params
         );
+    }
+
+    /**
+     * Get all extenders for particular entry id.
+     *
+     * @param string $id
+     *
+     * @return array|mixed
+     */
+    private function getExtenders(string $id)
+    {
+        return $this->extended[$id] ?? [];
     }
 
     /**
@@ -278,11 +334,23 @@ class Container extends AutoWiringAware implements ArrayAccess, ContainerInterfa
         }
 
         if ((false === $this->has($id)) && (true === class_exists($id))) {
-            return $this->resolveClass($id, $arguments);
+            $get = $this->resolveClass($id, $arguments);
+
+            foreach ($this->getExtenders($id) as $extend) {
+                $get = $extend($this, $get);
+            }
+
+            return $get;
         }
 
         if (true === $this->has($id)) {
-            return $this->resolveEntry($id, $arguments);
+            $get = $this->resolveEntry($id, $arguments);
+
+            foreach ($this->getExtenders($id) as $extend) {
+                $get = $extend($this, $get);
+            }
+
+            return $get;
         }
 
         throw NotFoundContainerException::entryNotFound($id);
@@ -308,7 +376,10 @@ class Container extends AutoWiringAware implements ArrayAccess, ContainerInterfa
             $params = $reflection->getParameters();
         }
 
-        return $this->buildDependencies($params, $arguments);
+        $value = $this->buildDependencies($params, $arguments);
+        $this->entriesBeingResolved = [];
+
+        return $value;
     }
 
     /**

@@ -4,7 +4,26 @@ All notable changes to `container` will be documented in this file.
 
 Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
-## 1.5.2 - 2020-06-10
+## 1.6.0 - 2020-05-18  
+
+### Added
+- New feature `extended` method was added to extended already binded entries.  
+- Detecting Circular Dependencies
+- New method `isAlias` method to check if a entry is aliases.  
+
+### Deprecated
+- Nothing
+
+### Fixed
+- Remove some complexity from main class, and put it on sister class.    
+
+### Removed
+- Nothing
+
+### Security
+- Nothing
+
+## 1.5.2 - 2020-05-10
 
 ### Added
 - Nothing
@@ -21,7 +40,7 @@ Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) princip
 ### Security
 - Nothing
 
-## 1.5.1 - 2020-06-10
+## 1.5.1 - 2020-05-10
 
 ### Added
 - Nothing
@@ -38,7 +57,7 @@ Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) princip
 ### Security
 - Nothing
 
-## 1.5.0 - 2020-06-09
+## 1.5.0 - 2020-05-09
 
 ### Added
 - new feature added `factory` and `set` accept array callable, e.g.: `$container->set('my-entry', [Test::class, 'getFoo']);`  
