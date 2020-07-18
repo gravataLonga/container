@@ -150,6 +150,39 @@ $container->factory('random', [$class, 'get']);
 $foobar = $container->get('random'); // it will get random int
 ```
 
+
+### Extend 
+
+```php
+use Gravatalonga\Container\Container;
+
+class Test
+{
+    /**
+     * @var string
+     */
+    public $name;
+
+    public function __construct($name = 'Jonathan Fontes')
+    {
+        $this->name = $name;
+    }
+}
+
+$container = new Container(); 
+
+$container->get(Test::class, function(ContainerInterface $container) {
+    return new Test;
+});
+
+$container->extend(Test::class, function(ContainerInterface $container, $test) {
+    return new Test($test->name.' - The greatest!');
+});
+
+echo $container->get(Test::class); // It will print 'Jonathan Fontes - The greatest!';  
+```
+
+
 ### Advance usage  
 
 You can resolve class which not set into container. Our container it will attempt resolve from builtin/type hint arguments of constructions.  
@@ -246,35 +279,26 @@ $container = new Container();
 $container->get(Test::class); // 'Jonathan Fontes' it will pass into container...
 ```  
 
-### Extend 
+### Tip  
 
-```php
-use Gravatalonga\Container\Container;
+It's well known that using singleton pattern, it's an anti-pattern.
+But small feature can't hurt you  
 
-class Test
-{
-    /**
-     * @var string
-     */
-    public $name;
+So, you can use it like this:  
+```
 
-    public function __construct($name = 'Jonathan Fontes')
-    {
-        $this->name = $name;
-    }
-}
+$container = new Container();
 
-$container = new Container(); 
+// ... 
 
-$container->get(Test::class, function(ContainerInterface $container) {
-    return new Test;
-});
+Container::setInstance($container);
 
-$container->extend(Test::class, function(ContainerInterface $container, $test) {
-    return new Test($test->name.' - The greatest!');
-});
+```
 
-echo $container->get(Test::class); // It will print 'Jonathan Fontes - The greatest!';  
+Then you can get instance of container,  
+
+```
+$container = Container::getInstance();
 ```
 
 Tips: The container can detected circular dependencies.  
