@@ -12,8 +12,6 @@ use ReflectionParameter;
 abstract class AutoWiringAware implements ContainerInterface
 {
     /**
-     * @param ReflectionParameter $reflector
-     *
      * @throws ContainerException
      * @throws ReflectionException
      *
@@ -29,8 +27,6 @@ abstract class AutoWiringAware implements ContainerInterface
     }
 
     /**
-     * @param ReflectionParameter $reflector
-     *
      * @throws ContainerException
      * @throws ReflectionException
      *

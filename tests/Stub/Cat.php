@@ -6,5 +6,5 @@ namespace Tests\Stub;
 
 class Cat implements FooInterface
 {
-    public $name = "";
+    public $name = '';
 }

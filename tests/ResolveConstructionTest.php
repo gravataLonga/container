@@ -22,8 +22,8 @@ use Tests\Stub\FooInterface;
 
 /**
  * @internal
- * @covers \Gravatalonga\Container\Container
  * @covers \Gravatalonga\Container\AutoWiringAware
+ * @covers \Gravatalonga\Container\Container
  */
 final class ResolveConstructionTest extends TestCase
 {
@@ -177,24 +177,23 @@ final class ResolveConstructionTest extends TestCase
         self::assertEquals('my-var', $class->name);
     }
 
-    /** @test */
     public function testItsActuallyResolveByProviderArgumentRatherAutowiring()
     {
         $container = new Container();
 
         $bar = new Bar();
-        $bar->name = "My BAR";
+        $bar->name = 'My BAR';
         $cat = new Cat();
-        $cat->name = "My CAT";
+        $cat->name = 'My CAT';
 
         $class = $container->make(FooBarWithCustomTypes::class, [
             Bar::class => $bar,
-            Cat::class => $cat
+            Cat::class => $cat,
         ]);
 
         self::assertInstanceOf(FooBarWithCustomTypes::class, $class);
-        self::assertEquals("My BAR", $class->bar->name);
-        self::assertEquals("My CAT", $class->cat->name);
+        self::assertEquals('My BAR', $class->bar->name);
+        self::assertEquals('My CAT', $class->cat->name);
         self::assertSame($bar, $class->bar);
         self::assertSame($cat, $class->cat);
     }

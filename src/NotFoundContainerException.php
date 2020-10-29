@@ -9,11 +9,6 @@ use Psr\Container\NotFoundExceptionInterface;
 
 final class NotFoundContainerException extends Exception implements NotFoundExceptionInterface
 {
-    /**
-     * @param string $entry
-     *
-     * @return NotFoundContainerException
-     */
     public static function entryNotFound(string $entry): NotFoundContainerException
     {
         return new self(sprintf('Entry %s not found', $entry));

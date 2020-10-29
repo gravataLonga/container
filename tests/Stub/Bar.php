@@ -6,5 +6,5 @@ namespace Tests\Stub;
 
 class Bar implements FooInterface
 {
-    public $name = "";
+    public $name = '';
 }

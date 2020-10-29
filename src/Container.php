@@ -98,7 +98,6 @@ class Container extends AutoWiringAware implements ArrayAccess, ContainerInterfa
 
     /**
      * @param string $id
-     * @param callable $factory
      *
      * @throws NotFoundContainerException
      *
@@ -122,7 +121,6 @@ class Container extends AutoWiringAware implements ArrayAccess, ContainerInterfa
     /**
      * Factory binding.
      *
-     * @param string $id
      * @param callable|mixed $factory
      *
      * @return void
@@ -242,7 +240,6 @@ class Container extends AutoWiringAware implements ArrayAccess, ContainerInterfa
     /**
      * Alias for Factory method.
      *
-     * @param string $id
      * @param mixed $factory
      *
      * @return void
@@ -252,9 +249,6 @@ class Container extends AutoWiringAware implements ArrayAccess, ContainerInterfa
         $this->factory($id, $factory);
     }
 
-    /**
-     * @param ContainerInterface $container
-     */
     public static function setInstance(ContainerInterface $container): void
     {
         self::$instance = $container;
@@ -264,7 +258,6 @@ class Container extends AutoWiringAware implements ArrayAccess, ContainerInterfa
      * Share rather resolve as factory.
      *
      * @param string $id
-     * @param Closure $factory
      *
      * @return void
      */
@@ -297,7 +290,8 @@ class Container extends AutoWiringAware implements ArrayAccess, ContainerInterfa
                 }
 
                 $type = $param->getType();
-                if ($type !== null && true === array_key_exists($type->getName(), $arguments)) {
+
+                if (null !== $type && true === array_key_exists($type->getName(), $arguments)) {
                     return $arguments[$type->getName()];
                 }
 
@@ -310,8 +304,6 @@ class Container extends AutoWiringAware implements ArrayAccess, ContainerInterfa
     /**
      * Get all extenders for particular entry id.
      *
-     * @param string $id
-     *
      * @return array|mixed
      */
     private function getExtenders(string $id)
@@ -320,7 +312,6 @@ class Container extends AutoWiringAware implements ArrayAccess, ContainerInterfa
     }
 
     /**
-     * @param string $id
      * @param array<string, mixed> $arguments
      *
      * @throws NotFoundContainerException
@@ -362,7 +353,6 @@ class Container extends AutoWiringAware implements ArrayAccess, ContainerInterfa
     }
 
     /**
-     * @param Reflector $reflection
      * @param array<string, mixed> $arguments
      *
      * @return array<int, mixed>
@@ -403,7 +393,6 @@ class Container extends AutoWiringAware implements ArrayAccess, ContainerInterfa
     }
 
     /**
-     * @param string $id
      * @param array<string, mixed> $arguments
      *
      * @throws ReflectionException
