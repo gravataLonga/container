@@ -296,6 +296,11 @@ class Container extends AutoWiringAware implements ArrayAccess, ContainerInterfa
                     return $arguments[$param->getName()];
                 }
 
+                $type = $param->getType();
+                if ($type !== null && true === array_key_exists($type->getName(), $arguments)) {
+                    return $arguments[$type->getName()];
+                }
+
                 return $this->autoWiringArguments($param);
             },
             $params

@@ -13,7 +13,7 @@ use Tests\Stub\FooBarWithNullClass;
 
 /**
  * @internal
- * @covers \Container
+ * @covers \Gravatalonga\Container\Container
  */
 final class AliasMethodTest extends TestCase
 {

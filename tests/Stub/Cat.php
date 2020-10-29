@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Stub;
 
-class Bar implements FooInterface
+class Cat implements FooInterface
 {
     public $name = "";
 }

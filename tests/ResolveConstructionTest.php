@@ -9,9 +9,11 @@ use Gravatalonga\Container\ContainerException;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
 use Tests\Stub\Bar;
+use Tests\Stub\Cat;
 use Tests\Stub\Dog;
 use Tests\Stub\EmptyConstructionTest;
 use Tests\Stub\FooBarClass;
+use Tests\Stub\FooBarWithCustomTypes;
 use Tests\Stub\FooBarWithNullClass;
 use Tests\Stub\FooBarWithoutBuiltInTypeClass;
 use Tests\Stub\FooBarWithoutBuiltInTypeNullableClass;
@@ -20,7 +22,7 @@ use Tests\Stub\FooInterface;
 
 /**
  * @internal
- * @covers \Container
+ * @covers \Gravatalonga\Container\Container
  * @covers \Gravatalonga\Container\AutoWiringAware
  */
 final class ResolveConstructionTest extends TestCase
@@ -173,5 +175,27 @@ final class ResolveConstructionTest extends TestCase
 
         self::assertInstanceOf(FooBarWithNullClass::class, $class);
         self::assertEquals('my-var', $class->name);
+    }
+
+    /** @test */
+    public function testItsActuallyResolveByProviderArgumentRatherAutowiring()
+    {
+        $container = new Container();
+
+        $bar = new Bar();
+        $bar->name = "My BAR";
+        $cat = new Cat();
+        $cat->name = "My CAT";
+
+        $class = $container->make(FooBarWithCustomTypes::class, [
+            Bar::class => $bar,
+            Cat::class => $cat
+        ]);
+
+        self::assertInstanceOf(FooBarWithCustomTypes::class, $class);
+        self::assertEquals("My BAR", $class->bar->name);
+        self::assertEquals("My CAT", $class->cat->name);
+        self::assertSame($bar, $class->bar);
+        self::assertSame($cat, $class->cat);
     }
 }

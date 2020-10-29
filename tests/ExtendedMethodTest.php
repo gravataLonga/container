@@ -17,7 +17,7 @@ use TypeError;
 
 /**
  * @internal
- * @covers \Container
+ * @covers \Gravatalonga\Container\Container
  */
 final class ExtendedMethodTest extends TestCase
 {

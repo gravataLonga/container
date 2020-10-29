@@ -16,7 +16,7 @@ use Tests\Stub\CircularDependencyValue2;
 
 /**
  * @internal
- * @covers \Container
+ * @covers \Gravatalonga\Container\Container
  */
 final class ContainerTest extends TestCase
 {
