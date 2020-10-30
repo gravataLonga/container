@@ -117,7 +117,7 @@ if (isset($container[FooBar::class])) {
 
 ### Alias  
 
-Alias like the name indicate, it to make a possibility to make an alias from one entry to another. It will throw an exception.   
+Alias like the name show, it to make a possibility to make an alias from one entry to another. It will throw an exception.   
 
 ```php
 use Gravatalonga\Container\Container;
@@ -185,9 +185,9 @@ echo $container->get(Test::class); // It will print 'Jonathan Fontes - The great
 
 ### Advance usage  
 
-You can resolve class which not set into container. Our container it will attempt resolve from builtin/type hint arguments of constructions.  
+You can resolve class which not set into container. Our container it will attempt resolve from built-in/type hint arguments of constructions.  
 
-> **Information**: Builtin is type which is built in on PHP, which is `string`, `int`, `boolean`, etc. Type Hint is type which is created by user land, for example, when creating a class you are creating a new type.  
+> **Information**: built-in is type which is built in on PHP, which is `string`, `int`, `boolean`, etc. Type Hint is type which is created by user land, such as, when creating a class you are creating a new type.  
 
 ### Using Type Hint Class  
 
@@ -255,9 +255,9 @@ $container = new Container();
 $container->get(Test::class); // null it will inject into Test class.  
 ```  
 
-In also attempt to resolve auto wiring of construction by it's default value, it will check default value of `__construction` and it will pass that default value.   
+In also attempt to resolve auto wiring of construction by its default value, it will check default value of `__construction` and it will pass that default value.   
 
-First case, if value is a simple built in type value.  
+First case, if value is a simple built-in type value.  
 ```php
 use Gravatalonga\Container\Container;
 
@@ -281,7 +281,7 @@ $container->get(Test::class); // 'Jonathan Fontes' it will pass into container..
 
 ### Tip  
 
-It's well known that using singleton pattern, it's an anti-pattern.
+It's well-known that using singleton pattern, it's an anti-pattern.
 But small feature can't hurt you  
 
 So, you can use it like this:  
@@ -349,4 +349,3 @@ The MIT License (MIT). Please see [License File](LICENSE) for more information.
 [link-contributors]: https://github.com/gravataLonga/container/graphs/contributors
 [link-action]: https://github.com/gravataLonga/container/actions?query=workflow%3A%22PHP+Composer%22
 [link-say-thank]: https://saythanks.io/to/jonathan.alexey16@gmail.com  
-
