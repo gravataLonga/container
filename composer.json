@@ -19,7 +19,7 @@
         "psr/container-implementation": "^1.0"
     },
     "require-dev": {
-        "drupol/php-conventions": "^1.7",
+        "drupol/php-conventions": "^1.8",
         "infection/infection": "^0.13.6 || ^0.16.0",
         "phpunit/phpunit": "^7 || ^8",
         "vimeo/psalm": "^3.11"
