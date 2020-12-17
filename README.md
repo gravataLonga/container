@@ -40,6 +40,9 @@ $container->share('random1', function() {
     return rand(0, 1000);
 });
 
+// create alias 'my-rand'  
+$container->alias('random1', 'my-rand');
+
 echo $container->get('random'); // get random number each time you call this.
 
 if ($container->has('random1'))  {
@@ -94,7 +97,7 @@ $container->set('Cache', function (ContainerInterface $container) {
     ]);
 });
 
-// factory is alias for set.  
+// set is a method alias of factory
 $container->factory('CacheManager', function() {
     return new CacheManager();
 });
@@ -258,7 +261,7 @@ $container = new Container();
 $container->get(Test::class); // null it will inject into Test class.  
 ```  
 
-In also attempt to resolve auto wiring of construction by its default value, it will check default value of `__construction` and it will pass that default value.   
+In also attempt to resolve auto wiring of construction by its default value, it will check default value of `__construct` and it will pass that default value.   
 
 First case, if value is a simple built-in type value.  
 ```php
@@ -287,7 +290,7 @@ $container->get(Test::class); // 'Jonathan Fontes' it will pass into container..
 It's well-known that using singleton pattern, it's an anti-pattern.
 But small feature can't hurt you  
 
-So, you can use it like this:  
+So, you can use:  
 ```
 
 $container = new Container();
