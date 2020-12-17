@@ -157,9 +157,9 @@ class Container extends AutoWiringAware implements ArrayAccess, ContainerInterfa
      */
     public function has($id)
     {
-        return array_key_exists($id, $this->bindings) ||
-            array_key_exists($id, $this->share) ||
-            array_key_exists($id, $this->aliases);
+        return array_key_exists($id, $this->bindings)
+            || array_key_exists($id, $this->share)
+            || array_key_exists($id, $this->aliases);
     }
 
     /**
