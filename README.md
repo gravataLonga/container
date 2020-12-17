@@ -13,8 +13,10 @@ Container implementation which follow PSR-11.
 
 ## Requirements  
 
-> Note: We drop support for php 7.1. 
-Require at least PHP >= 7.2 until <= 8.0
+|  PHP   |   VERSION   |
+| ------ | ----------- |
+| 8.0 <  |  <= 1.6     |
+| >= 8.0 |  >= 1.7     |
 
 ## Installation
 
