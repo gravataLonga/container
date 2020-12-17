@@ -291,7 +291,10 @@ class Container extends AutoWiringAware implements ArrayAccess, ContainerInterfa
 
                 $type = $param->getType();
 
+                // https://github.com/phpstan/phpstan/issues/1133
+                // @phpstan-ignore-next-line
                 if (null !== $type && true === array_key_exists($type->getName(), $arguments)) {
+                    // @phpstan-ignore-next-line
                     return $arguments[$type->getName()];
                 }
 

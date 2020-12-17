@@ -3,6 +3,8 @@ imports:
 
 parameters:
   tasks.phpstan.config: phpstan.neon
+  skip_tasks:
+    - twigcs
   extra_tasks:
     psalm:
       metadata:
