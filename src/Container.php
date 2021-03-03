@@ -56,7 +56,6 @@ class Container extends AutoWiringAware implements ArrayAccess, ContainerInterfa
      */
     private $share;
 
-
     private array $tags = [];
 
     /**
@@ -136,7 +135,7 @@ class Container extends AutoWiringAware implements ArrayAccess, ContainerInterfa
 
             foreach ($attributes as $attribute) {
                 array_push($this->tags, [
-                    $attribute->newInstance()
+                    $attribute->newInstance(),
                 ]);
             }
         }
@@ -281,6 +280,11 @@ class Container extends AutoWiringAware implements ArrayAccess, ContainerInterfa
             unset($this->resolved[$id]);
         }
         $this->share[$id] = $factory;
+    }
+
+    public function tag(string $tagName): array
+    {
+        return $this->tags;
     }
 
     /**
@@ -432,10 +436,5 @@ class Container extends AutoWiringAware implements ArrayAccess, ContainerInterfa
         }
 
         return $get;
-    }
-
-    public function tag(string $tagName): array
-    {
-        return $this->tags;
     }
 }
