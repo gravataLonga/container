@@ -56,6 +56,9 @@ class Container extends AutoWiringAware implements ArrayAccess, ContainerInterfa
      */
     private $share;
 
+
+    private array $tags = [];
+
     /**
      * Container constructor.
      *
@@ -127,6 +130,17 @@ class Container extends AutoWiringAware implements ArrayAccess, ContainerInterfa
      */
     public function factory(string $id, $factory)
     {
+        if (class_exists($id)) {
+            $reflection = new ReflectionClass($id);
+            $attributes = $reflection->getAttributes();
+
+            foreach ($attributes as $attribute) {
+                array_push($this->tags, [
+                    $attribute->newInstance()
+                ]);
+            }
+        }
+
         $this->bindings[$id] = is_callable($factory) ?
             ($factory instanceof Closure ?
                 $factory :
@@ -418,5 +432,10 @@ class Container extends AutoWiringAware implements ArrayAccess, ContainerInterfa
         }
 
         return $get;
+    }
+
+    public function tag(string $tagName): array
+    {
+        return $this->tags;
     }
 }
