@@ -17,6 +17,11 @@ jobs:
         php-versions: ['7.2', '7.3', '7.4', '8.0']
 
     steps:
+      - name: Set git to use LF
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+
       - name: Checkout
         uses: actions/checkout@master
         with:
@@ -42,7 +47,7 @@ jobs:
         run: composer install --no-progress --no-suggest --prefer-dist --optimize-autoloader
 
       - name: Run Grumphp
-        run: vendor/bin/grumphp run --no-ansi -n -c grumphp.${{ runner.os }}.yml.dist
+        run: vendor/bin/grumphp run --no-ansi -n
         env:
           STRYKER_DASHBOARD_API_KEY: ${{ secrets.STRYKER_DASHBOARD_API_KEY }}
 
