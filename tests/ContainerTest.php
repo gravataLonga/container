@@ -146,9 +146,19 @@ final class ContainerTest extends TestCase
         $container->set('abc', 123);
         $container->set('object', new stdClass());
 
+        $rand =  rand(0, 10);
+        $object = new stdClass();
+        $container->share('shared', $rand);
+        $container->share('objectShared', $object);
+
+
         self::assertSame('world', $container->get('hello'));
         self::assertSame(123, $container->get('abc'));
         self::assertInstanceOf(stdClass::class, $container->get('object'));
+        self::assertSame($rand, $container->get('shared'));
+        self::assertSame($container->get('shared'), $container->get('shared'));
+        self::assertSame($object, $container->get('objectShared'));
+        self::assertSame($container->get('objectShared'), $container->get('objectShared'));
     }
 
     public function testCanShareSameBindingAndCanCheckIfExists()

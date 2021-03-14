@@ -127,11 +127,7 @@ class Container extends AutoWiringAware implements ArrayAccess, ContainerInterfa
      */
     public function factory(string $id, $factory)
     {
-        $this->bindings[$id] = is_callable($factory) ?
-            ($factory instanceof Closure ?
-                $factory :
-                Closure::fromCallable($factory)) :
-            $factory;
+        $this->bindings[$id] = $this->prepareEntry($factory);
     }
 
     /**
@@ -258,15 +254,16 @@ class Container extends AutoWiringAware implements ArrayAccess, ContainerInterfa
      * Share rather resolve as factory.
      *
      * @param string $id
-     *
+     * @param mixed $factory
      * @return void
      */
-    public function share($id, Closure $factory)
+    public function share($id, $factory)
     {
         if (true === array_key_exists($id, $this->resolved)) {
             unset($this->resolved[$id]);
         }
-        $this->share[$id] = $factory;
+
+        $this->share[$id] = $this->prepareEntry($factory);
     }
 
     /**
@@ -418,5 +415,14 @@ class Container extends AutoWiringAware implements ArrayAccess, ContainerInterfa
         }
 
         return $get;
+    }
+    
+    private function prepareEntry($factory)
+    {
+        return is_callable($factory) ?
+            ($factory instanceof Closure ?
+                $factory :
+                Closure::fromCallable($factory)) :
+            $factory;
     }
 }
