@@ -255,6 +255,7 @@ class Container extends AutoWiringAware implements ArrayAccess, ContainerInterfa
      *
      * @param string $id
      * @param mixed $factory
+     *
      * @return void
      */
     public function share($id, $factory)
@@ -309,6 +310,20 @@ class Container extends AutoWiringAware implements ArrayAccess, ContainerInterfa
     private function getExtenders(string $id)
     {
         return $this->extended[$id] ?? [];
+    }
+
+    /**
+     * @param mixed $factory
+     *
+     * @return callable|Closure
+     */
+    private function prepareEntry($factory)
+    {
+        return is_callable($factory) ?
+            ($factory instanceof Closure ?
+                $factory :
+                Closure::fromCallable($factory)) :
+            $factory;
     }
 
     /**
@@ -415,14 +430,5 @@ class Container extends AutoWiringAware implements ArrayAccess, ContainerInterfa
         }
 
         return $get;
-    }
-    
-    private function prepareEntry($factory)
-    {
-        return is_callable($factory) ?
-            ($factory instanceof Closure ?
-                $factory :
-                Closure::fromCallable($factory)) :
-            $factory;
     }
 }

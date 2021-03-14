@@ -146,11 +146,10 @@ final class ContainerTest extends TestCase
         $container->set('abc', 123);
         $container->set('object', new stdClass());
 
-        $rand =  rand(0, 10);
+        $rand = mt_rand(0, 10);
         $object = new stdClass();
         $container->share('shared', $rand);
         $container->share('objectShared', $object);
-
 
         self::assertSame('world', $container->get('hello'));
         self::assertSame(123, $container->get('abc'));
