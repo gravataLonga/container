@@ -38,21 +38,21 @@ $container->set('random', function() {
     return rand(0, 1000);
 });
 
-$container->share('random1', function() {
+$container->share('uniqueSeed', function() {
     return rand(0, 1000);
 });
 
-// create alias 'my-rand'  
-$container->alias('random1', 'my-rand');
+// create alias 'sessionId'  
+$container->alias('uniqueSeed', 'sessionId');
 
 echo $container->get('random'); // get random number each time you call this.
 
-if ($container->has('random1'))  {
-    echo $container->get('random1'); // get same random number.  
+if ($container->has('uniqueSeed'))  {
+    echo $container->get('uniqueSeed'); // get same random number.  
 }
 ```
 
-When creating a new instance of Container, you can pass on first argument configurations or entries to be already binded into container.  
+When creating a new instance of Container, you can pass on first argument configurations or entries to be already bonded into container.  
 
 ```php
 use Gravatalonga\Container\Container;
@@ -125,14 +125,15 @@ if (isset($container[FooBar::class])) {
 
 ### Alias  
 
-Alias like the name show, it to make a possibility to make an alias from one entry to another. It will throw an exception.   
+Alias like the name show, it to make a possibility to make an alias from one entry to another. It will throw an exception if can't be found.     
 
 ```php
 use Gravatalonga\Container\Container;
 
 $container = new Container();  
-$container->set(FooBar::class, function(ContainerInterface $container) {
-    return new FooBar($container->get('settings'));
+$container->set('settings', ['driver' => 'default']);
+$container->set(FooBar::class, function($settings) {
+    return new FooBar($settings);
 });
 
 $container->alias(FooBar::class, 'foo.bar');
@@ -145,7 +146,8 @@ $foobar = $container->get('foo.bar');
 ```php  
 use Gravatalonga\Container\Container;
 
-$class = new class {
+$class = new class
+{
     public function get(): int
     {
         return mt_rand(0, 100);
@@ -160,6 +162,8 @@ $foobar = $container->get('random'); // it will get random int
 
 
 ### Extend 
+
+In order implementation to be ease for other services providers `extend` method was created. 
 
 ```php
 use Gravatalonga\Container\Container;
@@ -193,7 +197,7 @@ echo $container->get(Test::class); // It will print 'Jonathan Fontes - The great
 
 ### Advance usage  
 
-You can resolve class which not set into container. Our container it will attempt resolve from built-in/type hint arguments of constructions.  
+Container is capable to resolve class who isn't bounded, it will resolve dependencies from `__construct` type-hint/built-in which is bounded. Read example code below:  
 
 > **Information**: built-in is type which is built in on PHP, which is `string`, `int`, `boolean`, etc. Type Hint is type which is created by user land, such as, when creating a class you are creating a new type.  
 
@@ -220,7 +224,7 @@ $container->set(FooBar::class, function () {
 $container->get(Test::class); // FooBar it will inject into Test class.  
 ```
 
-**Note:** We only support resolving auto wiring argument on construction if they is binded into container. Otherwise it will throw an exception if can't find entry into container.
+**Note:** We only support resolving auto wiring argument on construction if they are bounded into container. Otherwise it will throw an exception if can't find entry.  
 
 ### Using Built in type  
 
@@ -240,7 +244,7 @@ $container->set('name', 'my-var');
 $container->get(Test::class); // my-var it will inject into Test class.  
 ```  
 
-If argument accept nullable it will attempt resolve; otherwise it will inject null as argument.  
+If argument accept nullable if can't be resolve it will pass default value which in this case is `null`.  
 
 ```php
 use Gravatalonga\Container\Container;
