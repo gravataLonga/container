@@ -15,10 +15,10 @@ Container implementation which follow PSR-11.
 
 ## Requirements  
 
-|  PHP   |   VERSION   |
-| ------ | ----------- |
-| 8.0 <  |  <= 1.6     |
-| >= 8.0 |  >= 1.7     |
+| PHP     |   VERSION   |
+|---------| ----------- |
+| 8.0 <   |  <= 1.6     |
+| \>= 8.0 |  >= 1.7     |
 
 ## Installation
 

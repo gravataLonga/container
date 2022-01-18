@@ -191,6 +191,7 @@ class Container extends AutoWiringAware implements ArrayAccess, ContainerInterfa
      *
      * @return bool
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return $this->has($offset);
@@ -203,6 +204,7 @@ class Container extends AutoWiringAware implements ArrayAccess, ContainerInterfa
      *
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return $this->get($offset);
@@ -212,6 +214,7 @@ class Container extends AutoWiringAware implements ArrayAccess, ContainerInterfa
      * @param string $offset
      * @param mixed $value
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value): void
     {
         $this->factory($offset, $value);
@@ -222,6 +225,7 @@ class Container extends AutoWiringAware implements ArrayAccess, ContainerInterfa
      *
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset(

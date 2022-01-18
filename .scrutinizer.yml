@@ -11,6 +11,9 @@ build:
     php80:
       environment:
         php: 8.0
+    php81:
+      environment:
+        php: 8.1
 
 
 filter:
