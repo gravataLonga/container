@@ -1,37 +1,47 @@
-## Welcome to GitHub Pages
+## Container PSR-11 Implementation
 
-You can use the [editor on GitHub](https://github.com/gravataLonga/container/edit/gh-pages/index.md) to maintain and preview the content for your website in Markdown files.
+This library is lightweight in comparison to PHP-DI, there aren't nothing wrong using other rather this implementation. 
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+### Requirement  
 
-### Markdown
+ - PHP 7.4 or greater  
+ - Composer installed  
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
+### Install  
 
-```markdown
-Syntax highlighted code block
+`composer require gravatalonga/container`  
 
-# Header 1
-## Header 2
-### Header 3
+### Usage  
 
-- Bulleted
-- List
+Basic usage, is ease to start right away.   
 
-1. Numbered
-2. List
 
-**Bold** and _Italic_ and `Code` text
+```php 
+<?php
 
-[Link](url) and ![Image](src)
-```
+require_once "./vendor/autoload.php"
 
-For more details see [Basic writing and formatting syntax](https://docs.github.com/en/github/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax).
+use Gravatalonga\Container;
 
-### Jekyll Themes
+$container = new Container();
 
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/gravataLonga/container/settings/pages). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
+$container->set('config', [
+  'database' => 'mysql:\\user:password@localhost/dbname'
+]);
 
-### Support or Contact
+if ($container->has('config')) {
+  var_dump($container->get('config'));
+}
+```  
 
-Having trouble with Pages? Check out our [documentation](https://docs.github.com/categories/github-pages-basics/) or [contact support](https://support.github.com/contact) and we’ll help you sort it out.
+Library has a small footsprint but has powerful feature built in, at some level of cost.  
+Some feature is:  
+ 
+ - Factory  
+ - Lazy Loading  
+ - Share Instance  
+ - Autowiring  
+
+### Update  
+
+We try always to keep a stable release.  
