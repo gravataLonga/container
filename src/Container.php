@@ -135,7 +135,7 @@ class Container extends AutoWiringAware implements ArrayAccess, ContainerInterfa
      *
      * @throws ReflectionException
      */
-    public function get($id)
+    public function get(string $id)
     {
         return $this->resolve($id, []);
     }
@@ -151,7 +151,7 @@ class Container extends AutoWiringAware implements ArrayAccess, ContainerInterfa
     /**
      * {@inheritdoc}
      */
-    public function has($id)
+    public function has(string $id): bool
     {
         return array_key_exists($id, $this->bindings)
             || array_key_exists($id, $this->share)
