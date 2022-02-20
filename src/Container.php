@@ -29,32 +29,32 @@ class Container extends AutoWiringAware implements ArrayAccess, ContainerInterfa
     /**
      * @var array<string, string>
      */
-    private $aliases = [];
+    private array $aliases = [];
 
     /**
      * @var array<string, mixed>
      */
-    private $bindings;
+    private array $bindings;
 
     /**
      * @var array<string, boolean>
      */
-    private $entriesBeingResolved = [];
+    private array $entriesBeingResolved = [];
 
     /**
      * @var array <string, mixed>
      */
-    private $extended = [];
+    private array $extended = [];
 
     /**
      * @var array<string, mixed>
      */
-    private $resolved = [];
+    private array $resolved = [];
 
     /**
      * @var array<string, mixed>
      */
-    private $share;
+    private array $share;
 
     /**
      * Container constructor.
