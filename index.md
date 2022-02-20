@@ -41,6 +41,7 @@ Some feature is:
  - Lazy Loading  
  - Share Instance  
  - Autowiring  
+ - Alias  
 
 ### Update  
 
