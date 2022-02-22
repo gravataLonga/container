@@ -37,11 +37,11 @@ if ($container->has('config')) {
 Library has a small footsprint but has powerful feature built in, at some level of cost.  
 Some feature is:  
  
- - Factory  
- - Lazy Loading  
- - Share Instance  
- - Autowiring  
- - Alias  
+ - [Factory](./factory)  
+ - [Lazy Loading](./factory)
+ - [Autowiring](./autowiring)
+ - Share Instance (TODO)
+ - Alias (TODO)  
 
 ### Update  
 
