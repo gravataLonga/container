@@ -133,16 +133,6 @@ final class ExtendedMethodTest extends TestCase
         });
     }
 
-    public function testThrowExceptionIfExtendedIsNotCallable()
-    {
-        $this->expectException(TypeError::class);
-        $container = new Container();
-        $container->factory('hello', static function () {
-            return 'Hello';
-        });
-        $container->extend('hello', 'Olá');
-    }
-
     public function testWhenUnsetItRemoveExtendedEntriesAlso()
     {
         $container = new Container();
@@ -159,6 +149,16 @@ final class ExtendedMethodTest extends TestCase
         $ex->setAccessible(true);
 
         self::assertArrayNotHasKey('hello', $ex->getValue($container));
+    }
+
+    public function testCanExtendOnBasicValues ()
+    {
+        $container = new Container();
+        $container->factory('hello', 123);
+        $container->extend('hello', 456);
+
+        $this->assertNotEmpty($container->get('hello'));
+        $this->assertEquals(456, $container->get('hello'));
     }
 
     private function newClass($arg = null)

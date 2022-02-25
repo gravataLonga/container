@@ -98,18 +98,19 @@ class Container extends AutoWiringAware implements ArrayAccess, ContainerInterfa
 
     /**
      * @param string $id
+     * @param callable|mixed $factory
      *
      * @throws NotFoundContainerException
      *
      * @return void
      */
-    public function extend($id, callable $factory)
+    public function extend($id, $factory)
     {
         if (!$this->has($id)) {
             throw NotFoundContainerException::entryNotFound($id);
         }
 
-        $factory = $factory instanceof Closure ? $factory : Closure::fromCallable($factory);
+        $factory = $this->prepareEntry($factory);
 
         if (true === array_key_exists($id, $this->resolved)) {
             unset($this->resolved[$id]);
@@ -362,7 +363,11 @@ class Container extends AutoWiringAware implements ArrayAccess, ContainerInterfa
             $get = $this->resolveEntry($id, $arguments);
 
             foreach ($this->getExtenders($id) as $extend) {
-                $get = $extend($this, $get);
+                if (is_callable($extend)) {
+                    $get = $extend($this, $get);
+                    continue;
+                }
+                $get = $extend;
             }
 
             return $get;
