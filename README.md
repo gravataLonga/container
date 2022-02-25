@@ -360,5 +360,5 @@ The MIT License (MIT). Please see [License File](LICENSE) for more information.
 [link-code-quality]: https://scrutinizer-ci.com/g/gravatalonga/container
 [link-type-coverage]: https://shepherd.dev/github/gravataLonga/container
 [link-contributors]: https://github.com/gravataLonga/container/graphs/contributors
-[link-action]: https://github.com/gravataLonga/container/actions?query=workflow%3A%22PHP+Composer%22
+[link-action]: https://github.com/gravataLonga/container/actions?query=workflow%3A%22Continuous+Integration%22++
 [link-say-thank]: https://saythanks.io/to/jonathan.alexey16@gmail.com  
