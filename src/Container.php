@@ -354,6 +354,7 @@ class Container extends AutoWiringAware implements ArrayAccess, ContainerInterfa
 
             foreach ($this->getExtenders($id) as $extend) {
                 $get = $extend($this, $get);
+                $this->resolved[$id] = $get;
             }
 
             return $get;
@@ -365,9 +366,11 @@ class Container extends AutoWiringAware implements ArrayAccess, ContainerInterfa
             foreach ($this->getExtenders($id) as $extend) {
                 if (is_callable($extend)) {
                     $get = $extend($this, $get);
+                    $this->resolved[$id] = $get;
                     continue;
                 }
                 $get = $extend;
+                $this->resolved[$id] = $get;
             }
 
             return $get;
