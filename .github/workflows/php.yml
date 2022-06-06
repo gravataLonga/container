@@ -6,6 +6,8 @@ on:
 
 name: "Continuous Integration"
 
+# windows-latest can't be verified because it said "XDEBUG" is not a command valid.
+
 jobs:
   run:
     name: "Unit Testing"
@@ -13,7 +15,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        operating-system: [ubuntu-latest, windows-latest, macOS-latest]
+        operating-system: [ubuntu-latest, macOS-latest]
         php-versions: ['8.0', '8.1']
 
     steps:
@@ -58,5 +60,5 @@ jobs:
         continue-on-error: true
 
       - name: Scrutinizer
-        run: "composer scrutinizer --revision=${{ github.event.pull_request.head.sha || github.sha }}"
+        run: "./vendor/bin/ocular code-coverage:upload build/logs/clover.xml --format=php-clover --revision=${{ github.event.pull_request.head.sha || github.sha }}"
         continue-on-error: true
