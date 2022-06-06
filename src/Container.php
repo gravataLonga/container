@@ -85,11 +85,11 @@ class Container extends AutoWiringAware implements ArrayAccess, ContainerInterfa
      */
     public function alias($entry, $alias)
     {
-        if (true === $this->isAlias($entry)) {
+        if ($this->isAlias($entry)) {
             throw NotFoundContainerException::entryNotFound($entry);
         }
 
-        if (false === $this->has($entry)) {
+        if (!$this->has($entry)) {
             throw NotFoundContainerException::entryNotFound($entry);
         }
 
@@ -112,7 +112,7 @@ class Container extends AutoWiringAware implements ArrayAccess, ContainerInterfa
 
         $factory = $this->prepareEntry($factory);
 
-        if (true === array_key_exists($id, $this->resolved)) {
+        if (array_key_exists($id, $this->resolved)) {
             unset($this->resolved[$id]);
         }
 
@@ -166,7 +166,7 @@ class Container extends AutoWiringAware implements ArrayAccess, ContainerInterfa
      */
     public function isAlias($id)
     {
-        return true === array_key_exists($id, $this->aliases);
+        return array_key_exists($id, $this->aliases);
     }
 
     /**
@@ -265,7 +265,7 @@ class Container extends AutoWiringAware implements ArrayAccess, ContainerInterfa
      */
     public function share($id, $factory)
     {
-        if (true === array_key_exists($id, $this->resolved)) {
+        if (array_key_exists($id, $this->resolved)) {
             unset($this->resolved[$id]);
         }
 
@@ -282,13 +282,13 @@ class Container extends AutoWiringAware implements ArrayAccess, ContainerInterfa
     {
         return array_map(
             function (ReflectionParameter $param) use ($arguments) {
-                if (true === array_key_exists($param->getName(), $this->entriesBeingResolved)) {
+                if (array_key_exists($param->getName(), $this->entriesBeingResolved)) {
                     throw ContainerException::circularDependency();
                 }
 
                 $this->entriesBeingResolved[$param->getName()] = true;
 
-                if (true === array_key_exists($param->getName(), $arguments)) {
+                if (array_key_exists($param->getName(), $arguments)) {
                     return $arguments[$param->getName()];
                 }
 
@@ -296,7 +296,7 @@ class Container extends AutoWiringAware implements ArrayAccess, ContainerInterfa
 
                 // https://github.com/phpstan/phpstan/issues/1133
                 // @phpstan-ignore-next-line
-                if (null !== $type && true === array_key_exists($type->getName(), $arguments)) {
+                if (null !== $type && array_key_exists($type->getName(), $arguments)) {
                     // @phpstan-ignore-next-line
                     return $arguments[$type->getName()];
                 }
@@ -341,15 +341,15 @@ class Container extends AutoWiringAware implements ArrayAccess, ContainerInterfa
      */
     private function resolve(string $id, array $arguments = [])
     {
-        if (true === array_key_exists($id, $this->resolved)) {
+        if (array_key_exists($id, $this->resolved)) {
             return $this->resolved[$id];
         }
 
-        if (true === array_key_exists($id, $this->aliases)) {
+        if (array_key_exists($id, $this->aliases)) {
             return $this->resolve($this->aliases[$id], $arguments);
         }
 
-        if ((false === $this->has($id)) && (true === class_exists($id))) {
+        if ((!$this->has($id)) && (class_exists($id))) {
             $get = $this->resolveClass($id, $arguments);
 
             foreach ($this->getExtenders($id) as $extend) {
@@ -360,7 +360,7 @@ class Container extends AutoWiringAware implements ArrayAccess, ContainerInterfa
             return $get;
         }
 
-        if (true === $this->has($id)) {
+        if ($this->has($id)) {
             $get = $this->resolveEntry($id, $arguments);
 
             foreach ($this->getExtenders($id) as $extend) {
@@ -388,10 +388,8 @@ class Container extends AutoWiringAware implements ArrayAccess, ContainerInterfa
     {
         $params = [];
 
-        if ($reflection instanceof ReflectionClass) {
-            if (null !== $constructor = $reflection->getConstructor()) {
-                $params = $constructor->getParameters();
-            }
+        if ($reflection instanceof ReflectionClass && null !== $constructor = $reflection->getConstructor()) {
+            $params = $constructor->getParameters();
         }
 
         if ($reflection instanceof ReflectionFunction) {
@@ -434,7 +432,7 @@ class Container extends AutoWiringAware implements ArrayAccess, ContainerInterfa
             $reflection = new ReflectionFunction($get);
             $value = $reflection->invokeArgs($this->resolveArguments($reflection, $arguments));
 
-            if (true === array_key_exists($id, $this->share)) {
+            if (array_key_exists($id, $this->share)) {
                 $this->resolved[$id] = $value;
             }
 

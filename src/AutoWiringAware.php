@@ -19,7 +19,7 @@ abstract class AutoWiringAware implements ContainerInterface
      */
     protected function argumentWithoutType(ReflectionParameter $reflector)
     {
-        if (false === $reflector->isOptional()) {
+        if (!$reflector->isOptional()) {
             throw ContainerException::findType($reflector->getName());
         }
 
@@ -34,7 +34,7 @@ abstract class AutoWiringAware implements ContainerInterface
      */
     protected function autoWiringArguments(ReflectionParameter $reflector)
     {
-        if (true === $this->has($reflector->getName())) {
+        if ($this->has($reflector->getName())) {
             return $this->get($reflector->getName());
         }
 
