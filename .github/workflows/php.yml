@@ -57,5 +57,5 @@ jobs:
       - name: Scrutinizer
         run: |
           wget https://scrutinizer-ci.com/ocular.phar
-          php ocular.phar code-coverage:upload --format=php-clover build/logs/clover.xml
+          ./vendor/bin/ocular code-coverage:upload --format=php-clover build/logs/clover.xml
         continue-on-error: true
