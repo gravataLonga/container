@@ -58,5 +58,5 @@ jobs:
         continue-on-error: true
 
       - name: Scrutinizer
-        run: "composer scrutinizer"
+        run: "composer scrutinizer --revision=${{ github.event.pull_request.head.sha || github.sha }}"
         continue-on-error: true

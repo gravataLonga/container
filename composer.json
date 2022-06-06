@@ -35,6 +35,13 @@
             "Tests\\": "tests/"
         }
     },
+    "allow-plugins": {
+        "infection/infection": true,
+        "phpunit/phpunit": true,
+        "vimeo/psalm": true,
+        "rector/rector": true,
+        "scrutinizer/ocular": true
+    },
     "scripts": {
         "test": "XDEBUG_MODE=coverage phpunit",
         "reactor": "rector process --no-progress-bar --no-diffs",
