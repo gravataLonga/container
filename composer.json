@@ -36,6 +36,8 @@
         }
     },
     "scripts": {
-        "test": "phpunit test"
+        "test": "XDEBUG_MODE=coverage phpunit",
+        "reactor": "rector process --no-progress-bar --no-diffs",
+        "scrutinizer": "ocular code-coverage:upload build/logs/clover.xml --format=php-clover"
     }
 }
