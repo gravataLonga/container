@@ -350,14 +350,7 @@ class Container extends AutoWiringAware implements ArrayAccess, ContainerInterfa
         }
 
         if ((!$this->has($id)) && (class_exists($id))) {
-            $get = $this->resolveClass($id, $arguments);
-
-            foreach ($this->getExtenders($id) as $extend) {
-                $get = $extend($this, $get);
-                $this->resolved[$id] = $get;
-            }
-
-            return $get;
+            return $this->resolveClass($id, $arguments);
         }
 
         if ($this->has($id)) {

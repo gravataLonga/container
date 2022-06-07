@@ -11,6 +11,7 @@ use Psr\Container\ContainerInterface;
 use ReflectionClass;
 use Tests\Stub\AnimalInterface;
 use Tests\Stub\Bar;
+use Tests\Stub\Cat;
 use Tests\Stub\Dog;
 use Tests\Stub\FooInterface;
 use TypeError;
